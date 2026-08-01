@@ -20,10 +20,13 @@ Notation per [00-notation.md](00-notation.md). New symbols: `WL` sealed water li
 | `S-V6` | NEC: 15 A / 20 A branch circuits at 120 V; 80 % rule for continuous loads (≥3 h) | C |
 
 The user's candidate motor link (`a.co/d/04oTWe5r`) did not resolve from this
-environment. Working assumption pending confirmation: it is an `S-V4`-class 5.7"
-3-stage tangential bypass unit (~1500 W / ~12.5 A). Every conclusion below is stated
-so it survives ±20 % on that assumption; re-check `P11.10` if the linked motor is a
-7.2" 2-stage instead.
+environment; §11.1–§11.8 were first drafted assuming an `S-V4`-class ~1500 W unit.
+**`Q-V1` is now resolved by product screenshot (2026-08-01): `S-V7`.** §11.9 records
+the corrections; where §11.4–§11.5 conflict with §11.9, §11.9 governs.
+
+| Key | Source | Tier basis |
+|---|---|---|
+| `S-V7` | User screenshot of the linked listing: 116392-00-pattern clone, 120 V 50/60 Hz, 5.7", 2-stage tangential bypass, **900 W (≈7.5 A)**, **97.0 CFM @ 2" orifice**, **81.8" H₂O sealed**, Class B, open enclosure | C (weak — clone marketing card, no curve) |
 
 ## 11.2 Duty restated (from phase 8)
 
@@ -90,7 +93,23 @@ system ceiling (`P8.91`).
 
 | ID | Question | Blocks |
 |---|---|---|
-| `Q-V1` | Confirm the linked Amazon motor's actual specs (assumed `S-V4`-class). If 7.2"/14.8 A: still one-per-circuit, ~5 % more flow, marginal on the 15 A circuit — prefer both circuits 20 A. | `P11.12` |
-| `Q-V2` | Greif 30-gal drum collapse pressure (test to failure with the spare, or find rating). Sets the relief valve margin. | `P11.17` |
-| `Q-V3` | Is a second 20 A circuit available for motor 3? Determines whether 265 CFM is reachable or ~200 CFM is the plateau. | `P11.13`, `P11.15` |
+| ~~`Q-V1`~~ | **RESOLVED** — see `S-V7` and §11.9. | — |
+| `Q-V2` | Greif 30-gal drum collapse pressure (test to failure with the spare, or find rating). Sets the relief valve margin. Stakes lowered by `P11.21` (20.4 kPa max vs 32). | `P11.17` |
+| ~~`Q-V3`~~ | **DISSOLVED by `P11.20`** — three motors now fit the two circuits already available; no second 20 A circuit needed. | — |
 | `Q-V4` | Filter/separator order on the vacuum drum itself (CamVac-style internal cartridge vs bag) — separate phase; the cyclone upstream changes the loading assumptions vs a stock CamVac. | build 2 |
+| `Q-V5` | Clone quality: `S-V7` card gives no duty rating, no brush spec, no curve. Buy one, run it hard for an hour, measure flow (`V9.17` rig) and temperature before ordering the fleet. | `P11.20` |
+
+## 11.9 Q-V1 resolved — the 900 W motor changes the answer for the better
+
+The linked motor (`S-V7`) is a **lower-lift, high-flow-per-amp** unit: 97 CFM at only
+7.5 A, because it spends its wattage on flow, not on lift nobody needs (81.8" vs 137").
+That is precisely the right shape for this duty (§11.2). Flow-per-amp ≈ **12.9 CFM/A**
+vs ~8–9 for the `S-V3`/`S-V4` class — a ~50 % better use of scarce circuit amps.
+
+| ID | Claim | Tier |
+|---|---|---|
+| `P11.19` | 2" orifice is near-free-air for a 5.7" motor: treat 97 CFM as ≈ `Q_o`. Working point ~20" WC is now 24 % of the (lower) sealed lift, so per-motor delivery at duty derates to ~80–85 % ≈ **78–82 CFM** (vs `P11.09`'s 85–90 % for high-lift motors). | E |
+| `P11.20` | **Revised configuration (supersedes `P11.12`–`P11.13`): three `S-V7` motors, parallel, on the two existing circuits — two on the 20 A (15 A nameplate ≤ 16 A continuous budget, working ~13.5 A), one on the 15 A (7.5 A ≪ 12 A).** ~2700 W input, **~235–255 CFM at duty** — at or within reach of the 265 CFM ceiling with no new wiring. The 1500 W-class plan needed a third circuit for the same flow. Drill the lid for 4; install 3. | E (verified) |
+| `P11.21` | Sealed lift 81.8" = **20.4 kPa** — essentially identical to the CamVac's 81" on the same style of drum (`S-V1`). Blocked-inlet drum load drops from 32 kPa (`P11.17`) to a figure with commercial precedent. Relief valve stays (protects printed parts and motors, `P4.85`/`P4.99`), but the drum-crush margin question is now bounded by a working commercial example. | C/E |
+| `P11.22` | A fourth motor (second 20 A circuit, lid position 4) gives ~320+ CFM — above the 265 CFM port ceiling (`P8.90`), so it buys headroom against filter loading, not capture. Defer until measured flow says the plateau matters. | E |
+| `P11.23` | Per-motor at duty is ~80 CFM not ~100: with only **two** motors running (~160 CFM), even a 3" branch is marginal (18.7 m/s < 20.3). The two-motor state is a cleanup/light-duty mode; **routing runs happen with all three on** (`P11.14` seals cover any idle position). | E (verified) |

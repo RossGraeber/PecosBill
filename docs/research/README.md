@@ -71,5 +71,6 @@ Build 2 (`D`=240 mm @ 265 CFM) is deferred until the LVHP system is designed —
 **Stage 1 is closed.** Next deliverable is the parametric generator, not geometry (§10.6).
 
 **LVHP vacuum source (2026-08-01):** phase 11 opened for the CamVac-class drum extractor that
-unblocks build 2. Configuration selected: **2 × ~1500 W tangential bypass motors, parallel, one
-per 120 V circuit (15 A + 20 A), lid provisioned for a third** (`P11.12`–`P11.13`). Open: `Q-V1`–`Q-V4`.
+unblocks build 2. Configuration selected (revised same day, `Q-V1` resolved): **3 × 900 W
+116392-class tangential bypass motors, parallel — two on the 20 A circuit, one on the 15 A —
+lid drilled for four** (`P11.20`). ~235–255 CFM at duty vs the 265 CFM ceiling. Open: `Q-V2`, `Q-V4`, `Q-V5`.
