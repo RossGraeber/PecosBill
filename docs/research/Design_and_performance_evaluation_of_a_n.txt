@@ -1,0 +1,326 @@
+--- p1 ---
+Design and performance evaluation of a new
+cyclone separator
+Irfan Karagoz n, Atakan Avci, Ali Surmen, Omer Sendogan
+Department of Mechanical Engineering, Uludag University, 16059 Bursa, Turkey
+article info
+Article history:
+Received 26 November 2012
+Received in revised form
+28 January 2013
+Accepted 30 January 2013
+Available online 24 February 2013
+Keywords:
+Cyclone separator
+Collection efﬁciency
+Pressure drop
+Cyclone design
+abstract
+This paper presents the design and performance characteristics of a new type cyclone
+separator. The design of this cyclone is based on the idea of improving cyclone efﬁciency
+by increasing the vortex length. This cyclone differs from a classical cyclone with the
+separation space. Instead of conical part, the separation space of this cyclone consists of
+an outer cylinder and a vortex limiter. A model of this cyclone has been manufactured
+and tested. Collection efﬁciency and pressure drop of this cyclone were measured under
+different operational conditions. Experimental results were compared with the conven-
+tional cyclones. The effects of the position of the vortex limiter on the cyclone
+performance were also investigated.
+& 2013 Elsevier Ltd. All rights reserved.
+1. Introduction
+Separation, collection and sampling aerosol particles or droplets from the carrying ﬂow is an important topic in the ﬁeld
+of ambient sampling and industrial particulate control. Cyclone is one of the most widely used devices for the separation
+process because of its simple design and lower construction and operating costs. There are many geometric and
+operational parameters inﬂuenced the separation process and cyclone performance which mainly comprises collection
+efﬁciency and pressure drop. Starting with
+Alexander (1949) , many studies have been conducted to improve cyclone
+performance by evaluating the effects of geometric and operational parameters.
+Modiﬁcations to the inlet design and the effects of inlet geometry on the cyclone performance have been studied
+extensively. The effect of the cyclone inlet dimensions on the performance and ﬂow ﬁeld pattern has been investigated
+computationally by
+Elsayed & Lacor (2011) . They found that the effect of changing the inlet width is more signiﬁcant than
+the inlet height especially for collection efﬁciency. The inlet area is one of the relevant parameters inﬂuencing the natural
+vortex length (
+Alexander, 1949; Corte´ s & Gil, 2007 ; Avci et al., 2013 ). Zhao et al. (2006) compared the performance of two
+types of cyclones with the conventional single inlet and spiral double inlets. The numerical results show that, the new type
+cyclone separator using the adding spiral double inlet can improve the symmetry of gas ﬂow pattern and enhance the
+particle separation efﬁciency. The effect of inlet section angle has been tested by a few researchers (
+Qian & Zhang, 2007 ;
+Qian & Wu, 2009 ). Also Erdal & Shirazi (2006) investigated the effect of three different inlet geometries (one inclined inlet,
+two inclined inlets and a gradually reduced inlet nozzle) on the ﬂow behavior. Three cyclone separators with different inlet
+geometry namely, conventional tangential single inlet, direct symmetrical spiral inlet, and a converging symmetrical spiral
+inlet, were investigated and compared as a function of particle size and ﬂow rate in the work by
+Zhao et al. (2004) .
+Contents lists available at SciVerse ScienceDirect
+journal homepage: www.elsevier.com/locate/jaerosci
+Journal of Aerosol Science
+0021-8502/$ - see front matter & 2013 Elsevier Ltd. All rights reserved.
+http://dx.doi.org/10.1016/j.jaerosci.2013.01.010
+n Corresponding author. Tel.: þ224 294 00 18; fax: þ224 294 00 36.
+E-mail address: karagoz@uludag.edu.tr (I. Karagoz).
+Journal of Aerosol Science 59 (2013) 57–64
+--- p2 ---
+The effects of cone dimension on the ﬂow pattern and cyclone performance were also investigated in the literature
+(Xiang & Lee, 2001 ; Chuah et al., 2006 ; Xiang et al., 2011 ). Researchers showed that when the cone opening is larger than
+the gas outlet diameter, reduction in cone size results in higher collection efﬁciency without signiﬁcantly increasing the
+pressure drop. In the study of
+Yoshida et al. (2001) , various types of apex cones were used at the inlet part of the dust box.
+They found that the effect of the apex cone angle on the particle separation performance decreases at high inlet velocity
+conditions. Effects of a cone prolonged with a vertical tube (dipleg) on the separation performance of a cyclone were also
+studied (
+Qian et al., 2006 ; Kaya & Karagoz, 2009 ). The effects of a counter-cone in the bottom of the cyclone on the cyclone
+performance have also been investigated ( Yoshida et al., 2003 , 2010; Kepa, 2012 ).
+The effects of the shape and diameter of the vortex ﬁnder on the cyclone’s performance were also studied by many
+researchers.Xiang & Lee (2008) showed that the tangential velocity increases as the exit tube diameter is reduced, giving rise to
+higher particle collection efﬁciency, and the pressure drop decreases with the increasing exit tube diameter. Simulations on the
+separation efﬁciency and pressure drop of a modiﬁed cyclone separator with a novel exhaust at different exhaust insert depths,
+sloping orientations, contracting angles and sloping angles were performed by C h e n&L i u( 2 0 1 0 ). Kepa (2010) analyzed
+numerically the ﬂow inside a cyclone with the division of gas and particle ﬂow in a vortex ﬁnder in which an additional internal
+tube (an inner vortex ﬁnder) was placed inside the vortex ﬁnder of a traditional cyclone.
+Additionally, more parameters were also considered in the literature. For example, cyclone height was studied by
+Hoffman et al. (2001) and Saﬁkhani et al. (2010) . Effects of a stick inserted in a cyclone were studied by Wang et al. (2005)
+and Farahani et al. (2011) , performance of square cyclones were investigated by Su & Mao (2006) , Saﬁkhani et al. (2011)
+and Su et al. (2011) . Kim et al. (2001) worked on the cyclone with different body designs including the conventional
+smooth surface body, the spiral guide body, the circumferential groove body and the vertical groove body. The results
+showed that the spiral guide can help enhance collection efﬁciency at low ﬂow rates. However, at high ﬂow rates, the
+guide no longer plays an important role in cyclone collection efﬁciency.
+Optimization of dimensions of a conventional cyclone was also taken attention of researchers. Optimization of the
+cyclone geometry for minimum pressure drop using mathematical models and CFD simulations was performed by
+Elsayed
+& Lacor (2010 , 2012). A new set of geometric ratios which are very close to the Stairmand high efﬁciency design was
+obtained to achieve minimum pressure drop.
+On the other hand, different cyclone designs have been reported in the literature. One of them is the double cyclone
+which was proposed and investigated by Zhu et al. (2001) , Xiang & Lee (2001) and Lim et al. (2004) . They evaluated its
+performance and compared to the high efﬁciency Stairmand cyclone. They found that the double cyclone has a lower
+pressure drop but has not higher collection efﬁciency than a conventional cyclone with the same overall dimensions.
+However, the collection efﬁciency of the double cyclone with electric ﬁeld increased greatly with the increasing the
+applied voltage. Another type of cyclone technology called the circumﬂuent cyclone was developed and studied by
+Wang
+et al. (2010) . They investigated experimentally its separation efﬁciency and pressure distribution, and compared its
+characteristics with the conventional cyclone. The results showed that the collection efﬁciency of this cyclone is higher by
+8% than that of a conventional cyclone in the gas inlet velocity range of 12–26 m/s and the pressure drop within this
+cyclone is only one half or one third of that of the conventional cyclone.
+Experimental and simulated studies of
+Yoshida et al. (2001) were conducted on the particle classiﬁcation performance
+of Iinoya’s type cyclone which has double conical sections. They found that separation efﬁciency of conventional and
+Iinoya’s type cyclones are nearly equal; however, pressure drop of the Iinoya’s type cyclone is about 10% smaller than that
+of the conventional cyclone. Alternatively, an auxiliary device named Post Cyclone was developed to reduce the emission
+of ﬁnes particles from the exhaust of reverse ﬂow cyclones (
+Jo et al., 2000 ). The Post cyclone consists of two annular shells
+placed vertically on the exit of a conventional cyclone. The experiments demonstrated that the Post Cyclone increases the
+overall efﬁciency of the cyclone by 2–20% depending on the operating conditions and the size of the cyclone. The pressure
+drop over the Post Cyclone is approximately 10% of the total pressure drop over the cyclone.
+The aim of the present work is to present the design and performance evaluation of a new cyclone separator. This
+cyclone differs from a classical cyclone with the separation space. Instead of conical part, the separation space of this
+special cyclone consists of an outer cylinder, and a plate vortex limiter to end the vortex. The movable vortex limiter
+allows us to adjust the vortex length according the inlet velocity in order to attain high efﬁciency.
+2. Design
+There are a wide variety of cyclone separators with different shapes and conﬁgurations. The most commonly used one
+is the reversed ﬂow cyclone which has a cone under a cylindrical body with a tangential inlet. Separation performance
+strongly depends on the structure and length of the double vortex formed in this kind of cyclone. According to the
+mathematical model explained in the works by Avci and Karagoz, friction factor which is a function of surface roughness
+and the Reynolds number, plays an important role on the cyclone efﬁciency and pressure drop (
+Avci & Karagoz, 2003 ;
+Karagoz & Avci, 2005 ). It was also demonstrated that surface roughness affects axial and tangential velocity distributions,
+and consequently the vortex length, in a cyclone ( Kaya et al., 2011 ). These results have motivated the idea that the vortex
+length and separation performance can be increased by decreasing friction losses in a cyclone. The design of this new
+cyclone is based on the idea that the vortex length and separation performance can be increased by decreasing friction
+losses in a cyclone. The new design differs from a classical cyclone with the separation space. It has inner and outer
+I. Karagoz et al. / Journal of Aerosol Science 59 (2013) 57–6458
+--- p3 ---
+cylinders without a conical part, and a vortex limiter ( Fig. 1). The ﬂow enters tangentially into the inner cylinder which has
+the main frictional surface and serves as vortex creator. The ﬂow spirals down below the inner cylinder almost without
+wall friction through the outer cylinder and then turns back from the limiter plate towards the exit pipe. The vortex limiter
+can be moved up and down unable to adjust the vortex length. For example, if the ﬂow rate or inlet velocity increases the
+vortex limiter can be slide down to increase the vortex length and to attain high efﬁciency. The particles move towards the
+wall of the outer cylinder and are separated from the vortical ﬂow under the action of centrifugal forces and collected on
+the bottom of the outer cylinder. That is the main separation process occurs in the outer cylinder. The new design has
+also the advantages of easy manufacture and low maintenance. A prototype was constructed to test its performance.
+The geometric dimensions of the prototype are given in
+Table 1 .
+3. Experimental setup
+In order to compare the performance of the new cyclone with conventional cyclones, a conventional reversed ﬂow cyclone
+which has the same body diameter, inlet and outlet sections were also constructed (Fig. 1). The conventional cyclone was tested at
+the same operational conditions. The experimental setup used for testing the cyclones is shown inFig. 2. The air ﬂow through the
+cyclone was supplied by a radial ventilator from the atmosphere. Pressure drop was measured with a differential manometer
+(TESTO 521) at each test. The particulate material was injected into the main air ﬂow by means of an ejector. The solid particles
+used in the test were cement with a d
+10, d50 and d90 of approximately 2, 14 and 48 mm, respectively. The solid loading was
+15 gr/min. Samples taken from the fed and collected particles were analyzed by using a Malvern Mastersizer 2000. Experiments
+have been carried out for different inlet velocities ranging from 10 to 25 m/s. The length of the main separation space (L)c a nb e
+adjusted by changing the position of the vortex limiter.
+4. Results and discussion
+4.1. Comparison of the cyclone performances
+A set of experiments were performed in order to measure the pressure drop and collection efﬁciency of the cyclones.
+First of all, the new cyclone with L¼ 480 mm and H¼490 mm was tested and the results were compared with the results
+Fig. 1. New design and conventional cyclones.
+Table 1
+Dimensions of the cyclones tested in this study.
+Cyclone dimensions Size (mm)
+Body diameters D
+1¼190, D¼250.
+Vortex ﬁnder diameter, D2 100
+Inlet section (a 0xb) 38 /C2 95
+Cylinder height, H 490, 885
+Cyclone length, L1 970, 1365
+Position of the vortex limiter, L 320, 480, 640, 800
+Vortex ﬁnder insertion length, SS ¼b
+Diameter of the cone tip, D3 84
+I. Karagoz et al. / Journal of Aerosol Science 59 (2013) 57–64 59
+--- p4 ---
+obtained in the conventional cyclone with the same size of H¼490 mm and L1¼970 mm ( Fig. 3 ). The values of the inlet
+velocities were 15–19.5–22.5 m/s. As it can be seen from the ﬁgure, the new cyclone gives generally higher pressure drop
+(
+Fig. 3a). However, particle collection efﬁciency of the new cyclone is better comparing to the conventional one, especially
+for high ﬂow rates ( Fig. 3 b). On the other hand, the position of the vortex limiter (i.e. L) is adjustable. Therefore, the
+collection efﬁciency of the new cyclone can be increased by adjusting the position of the vortex limiter according the ﬂow
+rate. As it can be seen from
+Fig. 4 , adjusting the position of the vortex limiter leads to an increase up to about %5 in
+efﬁciency of the new cyclone while pressure drop is almost the same with the conventional cyclone.
+4.2. Effects of the vortex limiter on the performance of the new cyclone
+Detailed analyses were carried out for the new cyclone of H¼ 885 mm. Tests were repeated for four different positions
+of the vortex limiter ( L¼320, 480, 640, 800 mm).
+Fig. 5 shows pressure drop values through the new cyclone. Pressure
+drop curves are almost the same and differences between them are not signiﬁcant. Similar results of pressure drop were
+obtained for H¼490 mm.
+Particle collection efﬁciency data obtained in these tests was summarized in
+Fig. 6. Collection efﬁciency increases with
+the increasing ﬂow rate as expected and lowest efﬁciency was obtained for L¼320 mm. It seems also that different
+behavior, which is the rapid increase in efﬁciency, occurs in high ﬂow rates for the longest ( L¼800 mm) positions of the
+vortex limiter. This might be caused by longer vortex length due to high ﬂow rates for this case.
+Adjustment of the position of the vortex limiter makes possible to equalize the natural vortex length to the cyclone
+length ( HþL) for which efﬁciency reaches the highest value. Fig. 7 supports this thought for the new cyclone with
+H¼885 mm. The collection efﬁciency and the cut size (or the critical diameter, d cr) which is the particle diameter collected
+with 50% efﬁciency were presented in Fig. 7 . The critical diameter, d cr, decreases as the length L increases. As the length
+increases further, the cut size is seen to increase again indicating lower collection efﬁciency. As a result, the cut size has a
+minimum at a certain value of L, depending on the ﬂow rate. This ﬁnding shows that there exists an optimum length of L
+for the best collection efﬁciency. Similar result was obtained theoretically by
+Surmen et al. (2011) for conventional
+cyclones. This optimum cyclone length might be equal to the natural vortex length for each ﬂow rate, so that collection
+efﬁciency will be a maximum. At a certain ﬂow rate, there is an optimum position of the vortex limiter.
+Fig. 2. Schematic representation of experimental set-up.
+Fig. 3. Comparisons of pressure drops (a) and collection efﬁciencies (b) between the new and conventional cyclones ( L was kept constant at 480 mm for
+the new cyclone).
+I. Karagoz et al. / Journal of Aerosol Science 59 (2013) 57–6460
+--- p5 ---
+Fractional efﬁciency is another important performance parameter in cyclones and it depends on many parameters.
+Among them, the effects of L, H and ﬂow rate were investigated in this study. Figs. 8 and 9 show the fractional efﬁciency
+curves for two different body heights ( H¼490 and 885 mm). It is possible to say from the comparison of the curves in Fig. 8
+which has dimensionless x axis that the general trend of the curves remains the same. However, the efﬁciency curves of
+the new cyclone are steeper than that of the conventional cyclone. The steepness of the curves is changing as the position
+of the vortex limiter varies. The cyclones L320 ( L¼ 320 mm) and L800 ( L¼800 mm) have the steepest curves for
+H¼490 mm.
+Fig. 9 has a dimensional x axis in order to compare efﬁciencies for a certain particle diameter. The best
+Fig. 5. Pressure drop through the new cyclone with H¼885 mm.
+Fig. 6. Particle collection efﬁciency curves of the new cyclone with H¼885 mm.
+Fig. 4. Comparisons of pressure drops (a) and collection efﬁciencies (b) between the new and conventional cyclones ( L was adjusted).
+I. Karagoz et al. / Journal of Aerosol Science 59 (2013) 57–64 61
+--- p6 ---
+collection efﬁciency for ﬁne particles obtained by the cyclone with L¼ 480 mm. This cyclone (L480) also has the steepest
+curves for H¼885 mm.
+5. Conclusion
+This study introduces a novel design of tangential inlet cyclone separators. The new design cyclone has a double
+cylindrical body and a vortex limiter instead of a conical body seen in conventional cyclones. The performance parameters
+Fig. 7. Effects of L on the collection efﬁciency of the new cyclone with H¼885 mm ( Q ¼257 m3/h).
+Fig. 8. Fractional efﬁciency curves of the new and conventional cyclones for H¼490 mm ( Q ¼257 m3/h).
+Fig. 9. Fractional efﬁciency curves of the new and conventional cyclones for H¼885 mm ( Q¼257 m3/h).
+I. Karagoz et al. / Journal of Aerosol Science 59 (2013) 57–6462
+--- p7 ---
+of the new cyclone were investigated experimentally by using cement particles injected into the inlet air ﬂow. The effects
+of structural difference on the cyclone performances were observed in the comparison of the results between the new and
+conventional cyclones. Moreover, the effects of height of the adjustable vortex limiter on the cyclone performance were
+clearly seen in the results of the new cyclone.
+The conclusions of the present experimental study are summarized below:
+1. Depending on particles characteristics, particles may accumulate on the conventional cyclone internal surfaces and
+lead to an increase in surface roughness. This phenomenon decreases the cyclone performance. However, this rarely or
+never occurs in the new cyclone.
+2. The particles falling down on the internal surface may be dragged into the internal vortex which goes to exit in
+conventional cyclones and collection efﬁciency decreases. This is not the case in the new cyclone.
+3. The length of the new cyclone can be increased easily, if required. However, there is no possibility to increase the
+length of aconventional cyclone.
+4. In the new cyclone, dust collected in the dustbin can be discharged easily and continuously.
+5. The duration for particle separation can be increased by increasing the cyclone length without causing extra pressure
+drop in the new cyclone design.
+6. High collection efﬁciency can be obtained by adjusting the vortex limiter according the ﬂow rate or inlet velocity.
+7. There is an optimum cyclone length which leads to the best collection efﬁciency for a given ﬂow rate in both
+conventional and new cyclones. Efﬁciency decreases if the cyclone length is above or below the optimum length.
+8. The cyclone length which allows maximum collection efﬁciency increases depending on the increase in the ﬂow rate
+or in the inlet velocity.
+9. Comparison of the results shows that the difference between the pressure drops of the new and classical cyclone with
+the same size is not signiﬁcant. Therefore, the decrease of the frictional surface of the new cyclone might increase the
+intensity and length of the vortex rather than increase the pressure drop. Collection efﬁciency of the new cyclone is
+higher than that of the conventional cyclone.
+10. The fractional efﬁciency curves of the new cyclone are steeper than that of the conventional cyclone. The steepness of
+the curves is changing as the position of the vortex limiter varies. There exists an optimum position of the vortex
+limiter for the best fractional efﬁciency curve.
+11. The new cyclone design makes possible to control and increase the vortex length and collection efﬁciency in miniature
+or small cyclones.
+The effects of other geometrical parameters on the performance of the new cyclone and comparison with conventional
+cyclones should also be investigated in future.
+Acknowledgment
+The authors gratefully acknowledge the ﬁnancial assistance from the Scientiﬁc and Technological Research Council of
+Turkey (No. 109M161).
+References
+Alexander, R.M. (1949). Fundamentals of cyclone design and operation. Proceedings of the Australian Institute of Minerals and Metals , 152–153, 203–228.
+Avci, A., & Karagoz, I. (2003). Effects of ﬂow and geometrical parameters on the collection efﬁciency in cyclone separators. Journal of Aerosol Science , 34,
+937–955.
+Avci, A., Karagoz, I., & Surmen, A. (2013). Development of a new method for evaluating vortex length in reversed ﬂow cyclone separators. Powder
+Technology, 235, 460–466.
+Chen, J., & Liu, X. (2010). Simulation of a modiﬁed cyclone separator with a novel exhaust. Separation and Puriﬁcation Technology , 73, 100–105.
+Chuah, T.G., Gimbun, J., & Choong, T.S.Y. (2006). A CFD study of the effect of cone dimensions on sampling aerocyclones performance and hydrodynamics.
+Powder Technology , 162, 126–132.
+Corte´ s, C., & Gil, A. (2007). Modeling the gas and particle ﬂow inside cyclone separators. Progress in Energy and Combustion Science , 33(5), 409–452.
+Elsayed, K., & Lacor, C. (2010). Optimization of the cyclone separator geometry for minimum pressure drop using mathematical models and CFD
+simulations. Chemical Engineering Science , 65, 6048–6058.
+Elsayed, K., & Lacor, C. (2012). Modeling and Pareto optimization of gas cyclone separator performance using RBF type artiﬁcial neural networks and
+genetic algorithms. Powder Technology , 217, 84–99.
+Elsayed, K., & Lacor, C. (2011). The effect of cyclone inlet dimensions on the ﬂow pattern and performance. Applied Mathematical Modelling, 35, 1952–1968.
+Erdal, F.M., & Shirazi, S.A. (2006). Effect of the inlet geometry on the ﬂow in a cylindrical cyclone separator. Journal of Energy Resources Technology , 128(1),
+62–69.
+Farahani, S., Noode, M., Tahmasbi, V., & Saﬁkhani, H. (2011). Effects of using ribs on ﬂow pattern and performance of cyclone separators. Engineering
+Applications of computational ﬂuid mechanics , 5(2), 180–187.
+Hoffmann, A.C., de Groot, M., Peng, W., Dries, H.W.A., & Kater, J. (2001). Advantages and risks in increasing cyclone separator length. Aiche Journal, 47(11),
+2452–2460.
+Jo, Y., Tien, C., & Ray, M.B. (2000). Development of a post cyclone to improve the efﬁciency of reverse ﬂow cyclones. Powder Technology , 113, 97–108.
+Karagoz, I., & Avci, A. (2005). Modelling of the pressure drop in tangential inlet cyclone separators. Aerosol Science Technology , 39, 857–865.
+Kaya, F., Karagoz, I., & Avci, A. (2011). Effects of surface roughness on the performance of tangential inlet cyclone separators. Aerosol Science Technology ,
+45(8), 988–995.
+I. Karagoz et al. / Journal of Aerosol Science 59 (2013) 57–64 63
+--- p8 ---
+Kaya, F., & Karagoz, I. (2009). Numerical investigation of performance characteristics of a cyclone prolonged with a dipleg. Chemical Engineering Journal ,
+151, 39–45.
+Kepa, A. (2010). Division of outlet ﬂow in a cyclone vortex ﬁnder —the CFD calculations. Separation and Puriﬁcation Technology , 75, 127–131.
+Kepa, A. (2012). The effect of a counter-cone position on cyclone performance. Separation Science and Technology , 47, 2250–2255.
+Kim, H.T., Lee, K.W., & Kuhlman, M.R. (2001). Exploratory design modiﬁcations for enhancing cyclone performance. Journal of Aerosol Science , 32,
+1135–1146.
+Lim, K.S., Kim, H.S., & Lee, K.W. (2004). Comparative performances of conventional cyclones and a double cyclone with and without an electric ﬁeld.
+Journal of Aerosol Science , 35, 103–116.
+Qian, F., & Zhang, M. (2007). Effects of the inlet section angle on the ﬂow ﬁeld of a cyclone. Chemical Engineering Technology , 30(11), 1521–4125.
+Qian, F., & Wu, Y. (2009). Effects of the inlet section angle on the separation performance of a cyclone. Chemical Engineering Research and Design , 87(12),
+1567–1572.
+Qian, F., Zhang, J., & Zhang, M. (2006). Effects of the prolonged vertical tube on the separation performance of a cyclone. Journal of Hazardous Materials ,
+136, 822–829.
+Saﬁkhani, H., Behabadi, M.A.A., Shams, M., & Rahimyan, M.H. (2010). Numerical simulation of ﬂow ﬁeld in three types of standard cyclone separators.
+Advanced Powder Technology , 21, 435–442.
+Saﬁkhani, H., Shams, M., & Dashti, S. (2011). Numerical simulation of square cyclones in small sizes. Advanced Powder Technology , 22(3), 359–365.
+Su, Y., & Mao, Y. (2006). Experimental study on the gas–solid suspension ﬂow in a square cyclone separator. Chemical Engineering Journal , 121(2006),
+51–58.
+Su, Y., Zheng, A., & Zhao, B. (2011). Numerical simulation of effect of inlet conﬁguration on square cyclone separator performance. Powder Technology ,
+210(3), 293–303.
+Surmen, A., Avci, A., & Karamangil, M.I. (2011). Prediction of the maximum-efﬁciency cyclone length for a cyclone with a tangential entry. Powder
+Technology, 207(1-3), 1–8.
+Xiang, R., Park, S.H., & Lee, K.W. (2011). Effects on cone dimension on cyclone performance. Journal of Aerosol Science , 32, 549–561.
+Xiang, R.B., & Lee, K.W. (2008). Effects of exit tube diameter on the ﬂow ﬁeld in cyclones. Particulate Science and Technology , 26, 467–481.
+Xiang, R.B., & Lee, K.W. (2001). Exploratory study on cyclones of modiﬁed designs. Particulate Science Technology , 19, 327–338.
+Wang, J.J., Wang, L.Z., & Liu, C.W. (2005). Effect of a stick on the gas turbulence structure in a cyclone separator. Aerosol Science Technology , 39, 713–721.
+Wang, W., Zhang, P., Wang, L., Chen, G., Li, J., & Li, X. (2010). Structure and performance of the circumﬂuent cyclone. Powder Technology , 200, 158–163.
+Yoshida, H., Akiyama, S., Fukui, K., & Taniguchi, S. (2003). Effect of apex cone height on particle classiﬁcation performance of a cyclone separator.
+Advanced Power Technology , 14(3), 263–278.
+Yoshida, H., Fukui, K., Yoshida, K., & Shinoda, E. (2001). Particle separation by Iinoya’s type gas cyclone. Powder Technology , 118, 16–23.
+Yoshida, H., Nishimura, Y., Fukui, K., & Yamamoto, T. (2010). Effect of apex cone shape on ﬁne particle classiﬁcation of gas-cyclone. Powder Technology ,
+204, 54–62.
+Zhao, B., Su, Y., & Zhang, J. (2006). Simulation of gas ﬂow pattern and separation efﬁciency in cyclone with conventional single and spiral double inlet
+conﬁguration. Chemical Engineering Research and Design , 84, 1158–1165.
+Zhao, B., Shen, H., & Kang, Y. (2004). Development of a symmetrical spiral inlet to improve cyclone separator performance. Powder Technology, 145, 47–50.
+Zhu, Y., Kim, M.C., Lee, K.W., Park, Y.O., & Kuhlman, M.R. (2001). Design and performance evaluation of a novel double cyclone. Aerosol Science Technology ,
+34, 373–380.
+I. Karagoz et al. / Journal of Aerosol Science 59 (2013) 57–6464
