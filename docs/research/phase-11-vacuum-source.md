@@ -28,6 +28,7 @@ the corrections; where §11.4–§11.5 conflict with §11.9, §11.9 governs.
 |---|---|---|
 | `S-V7` | User screenshot of the linked listing: 116392-00-pattern clone, 120 V 50/60 Hz, 5.7", 2-stage tangential bypass, **900 W (≈7.5 A)**, **97.0 CFM @ 2" orifice**, **81.8" H₂O sealed**, Class B, open enclosure | C (weak — clone marketing card, no curve) |
 | `S-V8` | User screenshots (2026-08-01): 116765-13/00-pattern clone, 120 V, 5.7", 3-stage tangential bypass, **1400 W (≈11.7 A)**, **95.3 CFM @ 2" orifice**, **136" H₂O sealed**, 8" tall, Class B open | C (weak — same caveat) |
+| `S-V9` | User screenshots (2026-08-01): another 116392-00-pattern clone card, **1100 W (≈9.2 A)**, otherwise identical air numbers to `S-V7`: 97.0 CFM @ 2", 81.8" sealed, 2-stage 5.7", 6.8" tall | C (weak — same caveat) |
 
 ## 11.2 Duty restated (from phase 8)
 
@@ -126,6 +127,8 @@ how to spend it, and §11.2 already answered that: on flow, not lift.
 | `P11.27` | Duty point becomes **~160 CFM plateau** (was ~235–255 under the 3-motor plan). Consequences: branch duct at **2.5"** holds transport (23.8 m/s); 3" is marginal (16.6 m/s < 20.3); the 3.5" boot port runs ~12 m/s — keep the boot run short and vertical-ish, expect some settling in it (`P8.94` discipline applies double). | E (verified) |
 | `P11.28` | Cyclone regen target at the plateau: `D` ≈ **200 mm**, `x50` ≈ **4.45 µm**, printable whole on the P1S (`P8.69`) — build 2 gets *simpler* under `C-V1`: no segmented courses, no diffuser question at 1.0× area ratio (`P8.95` re-check at 160 CFM). Measure first (`V9.17`), then generate. | E |
 | `P11.29` | Capture expectation, stated honestly: 160 CFM is ~60 % of the 265 CFM port ceiling — a large step up from 55, still short of full-boot capture on heavy sheet-goods cuts (`P8.82` softened, not erased). The upgrade path that respects `C-V1` is a second identical single-plug unit on the other circuit later (per-branch extraction), not more motors on this one. | E |
+| `P11.30` | The `S-V9` "1100 W" card is **not a middle option**: air numbers are identical to `S-V7` (97.0 CFM / 81.8") — same 116392 fan pack, hotter nameplate. It adds amps (10.5 CFM/A vs 12.9) and zero air. A pair is 18.3 A nameplate > 16 A continuous budget — fails `C-V1` on a 20 A circuit. Reject. | E (verified) |
+| `P11.31` | `S-V7` vs `S-V9` also demonstrates that **clone wattage labels are marketing, not measurements** — the same fan pack is sold as 900 W and 1100 W. Sharpens `Q-V5`: on the shakedown unit, *measure* amps with a meter at the real duty point; the pair-on-one-plug plan is contingent on measured draw ≈ 7.5 A, not on the card. If a "900 W" unit measures >8 A, the fleet plan needs re-checking against the 16 A budget. | E |
 
 ## 11.9 Q-V1 resolved — the 900 W motor changes the answer for the better
 
