@@ -98,7 +98,7 @@ system ceiling (`P8.91`).
 | ~~`Q-V1`~~ | **RESOLVED** — see `S-V7` and §11.9. | — |
 | `Q-V2` | Greif 30-gal drum collapse pressure (test to failure with the spare, or find rating). Sets the relief valve margin. Stakes lowered by `P11.21` (20.4 kPa max vs 32). | `P11.17` |
 | ~~`Q-V3`~~ | **DISSOLVED by `P11.20`** — three motors now fit the two circuits already available; no second 20 A circuit needed. | — |
-| `Q-V4` | Filter/separator order on the vacuum drum itself (CamVac-style internal cartridge vs bag) — separate phase; the cyclone upstream changes the loading assumptions vs a stock CamVac. | build 2 |
+| ~~`Q-V4`~~ | **PARTIALLY RESOLVED** in §11.11 (`P11.34`): per-motor cloth pre-filters, drum as plenum, pleated cartridge as the upgrade slot. Final media choice stays open until fines loading is observed downstream of the cyclone. | — |
 | `Q-V5` | Clone quality: `S-V7` card gives no duty rating, no brush spec, no curve. Buy one, run it hard for an hour, measure flow (`V9.17` rig) and temperature before ordering the fleet. | `P11.25` |
 
 ## 11.10 Constraint added: single plug, single circuit (user decision, 2026-08-01)
@@ -129,6 +129,53 @@ how to spend it, and §11.2 already answered that: on flow, not lift.
 | `P11.29` | Capture expectation, stated honestly: 160 CFM is ~60 % of the 265 CFM port ceiling — a large step up from 55, still short of full-boot capture on heavy sheet-goods cuts (`P8.82` softened, not erased). The upgrade path that respects `C-V1` is a second identical single-plug unit on the other circuit later (per-branch extraction), not more motors on this one. | E |
 | `P11.30` | The `S-V9` "1100 W" card is **not a middle option**: air numbers are identical to `S-V7` (97.0 CFM / 81.8") — same 116392 fan pack, hotter nameplate. It adds amps (10.5 CFM/A vs 12.9) and zero air. A pair is 18.3 A nameplate > 16 A continuous budget — fails `C-V1` on a 20 A circuit. Reject. | E (verified) |
 | `P11.31` | `S-V7` vs `S-V9` also demonstrates that **clone wattage labels are marketing, not measurements** — the same fan pack is sold as 900 W and 1100 W. Sharpens `Q-V5`: on the shakedown unit, *measure* amps with a meter at the real duty point; the pair-on-one-plug plan is contingent on measured draw ≈ 7.5 A, not on the card. If a "900 W" unit measures >8 A, the fleet plan needs re-checking against the 16 A budget. | E |
+
+## 11.11 Mechanical + electrical integration (2 × `S-V7` on a Greif 30-gal drum)
+
+Available fabrication: P1S (PETG structures, TPU gaskets), CNC router (plywood), plus
+the drum's own bolt-ring closure. CNC controller provides a 24 V output for auto-start.
+
+### Architecture
+
+| ID | Claim | Tier |
+|---|---|---|
+| `P11.32` | **Motors-on-lid, CamVac pattern.** The steel lid carries the vacuum load in membrane action (`P4.92`–`P4.96` transfer directly — same drum, similar ~20 kPa worst case). A **CNC plywood deck (~18 mm) through-bolted on top of the steel lid** does what the printed flange does on the cyclone drum: spreads the motor point loads, stiffens the two large motor cutouts, takes wood screws for the electrical box, and damps lid drumming. Steel seals; plywood stiffens; prints interface. | C/E |
+| `P11.33` | **Motor mounting:** each motor's fan-end face seats on a **printed TPU gasket ring** over a lid cutout at the fan eye; a **printed PETG clamp ring** (or plywood ring) presses the motor tabs down via 3 × M5 through lid + deck. Vacuum pulls the motor onto its seat in service — the clamp only has to hold it at rest and against exhaust reaction. TPU ring doubles as the vibration isolator. | E |
+| `P11.34` | **Air path in the drum:** 2.5" inlet bulkhead (printed, through lid or upper wall) with an internal **down-turned elbow** so incoming flow drives at the floor, not the motor eyes; drum volume is plenum + final dropout for anything the cyclone passed. **Pre-motor filtration is mandatory** — brushed motors downstream of a 4–5 µm-cut cyclone will otherwise eat fines: per-motor **cloth filter sleeve over a printed intake snorkel** (washable, cheap, CamVac's own scheme), with the deck laid out so a single shared pleated cartridge can replace both sleeves if observed loading demands it. | C/E |
+| `P11.35` | **Exhaust:** the two tangential horns get printed elbows into a **common printed manifold → one 2.5" down-turned outlet** at the deck edge, lined with adhesive foam. Removes ~1.8 kW of heat + brush dust from the operator's face and is the dominant noise fix (`P11.18`). Manifold merging two exhausts is fine — outlets are blowing, not sucking; no idle-motor backflow path because idle intakes are sealed (`P11.14`) — the flap seal belongs at each motor's **intake snorkel**, printed flapper, gravity-closed. | E |
+| `P11.36` | **Relief valve** (`P11.17`): buy a commercial vacuum relief/breather valve, set ≈ **60" H₂O (15 kPa)** — comfortably under the 81.8" sealed lift and under the CamVac's proven 81" drum loading. Mount through lid + deck. Do not print the spring seat; springs and PETG creep disagree. | C/E |
+| `P11.37` | **Electrical: one cord (12 AWG SJOOW, NEMA 5-20P) → small enclosure on the deck.** Inside: a 2-pole ≥20 A 120 V contactor with **24 V coil** driven by the CNC output, wired **Hand-Off-Auto**: H = manual rockers (one per motor, staged start, cleanup use); A = CNC 24 V picks up the contactor. Motor 2 starts through a **~0.5–1 s on-delay relay** so the combined universal-motor inrush (2 × ~40–60 A peak) never hits the breaker in the same half-second — the one part of auto-start that is not optional. Optional but cheap and worthwhile: **off-delay (run-on) timer ~20 s** so the duct clears after the spindle stops. | C/E |
+| `P11.38` | Confirm the CNC's 24 V flavor before buying the coil: **24 VDC output needs a 24 VDC coil** (or drive an SSR); a 24 VAC coil on DC burns. Fuse the coil circuit at the CNC end. | C |
+
+### Bill of additional components (beyond motors + drum)
+
+| Item | Qty | Note |
+|---|---|---|
+| Vacuum relief valve, ~60" H₂O set | 1 | `P11.36`; buy, don't print |
+| 2-pole contactor ≥20 A/120 V, 24 V coil | 1 | match VDC/VAC per `P11.38` |
+| On-delay relay 0.5–1 s | 1 | motor-2 stagger, `P11.37` |
+| Off-delay timer ~20 s | 1 | optional run-on |
+| 20 A rocker switches | 2 | Hand mode, per motor |
+| H-O-A selector (or 3-pos toggle) | 1 | |
+| 12 AWG SJOOW cord + NEMA 5-20P | 1 | `P11.26` |
+| Inline fuses ~10 A | 2 | per motor leg |
+| Cloth filter sleeves | 2 + spares | washable; `P11.34` |
+| Adhesive foam (exhaust lining) | — | `P11.35` |
+| M5 hardware, fender washers, foam tape | — | lid/deck sandwich |
+| 2.5" hose + cuffs, cyclone → vacuum drum | 1 | `P11.27` |
+
+### Printed (P1S) and CNC parts
+
+| Part | Process | Material |
+|---|---|---|
+| Motor gasket rings ×2 | P1S | TPU |
+| Motor clamp rings ×2 | P1S | PETG |
+| Intake snorkels + gravity flap seals ×2 | P1S | PETG (flap TPU-hinged) |
+| Exhaust elbows + common manifold + outlet | P1S | PETG (exhaust air is warm — check fit at temp; ASA if PETG softens) |
+| 2.5" inlet bulkhead + internal down-elbow | P1S | PETG |
+| Electrical enclosure (or CNC it) | P1S / CNC | PETG / ply |
+| **Lid deck** (motor cutouts, inlet, relief, box mounts) | **CNC** | 18 mm ply — CNC the **steel-lid drill template** too |
+| Optional muffler/sound box over motors | CNC | ply, foam-lined; phase 2, only if measured dB annoys |
 
 ## 11.9 Q-V1 resolved — the 900 W motor changes the answer for the better
 
