@@ -1,0 +1,375 @@
+<title>DAMMSUG 114 — twin-motor drum extractor assembly</title>
+<!--
+  DAMMSUG 114 — IKEA-style assembly design document
+  PecosBill LVHP vacuum source. Design basis: docs/research/phase-11-vacuum-source.md
+  (claim IDs P11.xx referenced throughout).
+
+  EDITABLE DESIGN DOC — how to evolve it:
+    • Every part is an SVG <g id="p-..."> in the exploded view; edit geometry there.
+    • Part numbers, quantities and sourcing live ONCE in the "Komponenter" table.
+    • Add a row to the REV table at the bottom when the design changes.
+    • All strokes use var(- -ink); never hardcode colors, both themes come from tokens.
+-->
+<style>
+  :root{
+    --paper:#ffffff; --ink:#1c1c1e; --accent:#0058a3; --amber:#e8a013;
+    --faint:rgba(28,28,30,.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --paper:#131720; --ink:#e6e9ee; --accent:#7fb0e0; --faint:rgba(230,233,238,.12); }
+  }
+  :root[data-theme="dark"]{ --paper:#131720; --ink:#e6e9ee; --accent:#7fb0e0; --faint:rgba(230,233,238,.12); }
+  :root[data-theme="light"]{ --paper:#ffffff; --ink:#1c1c1e; --accent:#0058a3; --faint:rgba(28,28,30,.10); }
+
+  html,body{background:var(--paper);color:var(--ink);margin:0;
+    font-family:Futura,"Century Gothic","URW Geometric","Trebuchet MS",Verdana,sans-serif;}
+  .sheet{max-width:920px;margin:0 auto;padding:28px 20px 80px;}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82em;}
+  .accent{color:var(--accent);}
+  a{color:var(--accent);}
+
+  header.cover{border:2px solid var(--ink);padding:22px 24px 18px;display:flex;
+    flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:space-between;}
+  h1{font-size:clamp(2.4rem,7vw,4rem);letter-spacing:.06em;margin:0;line-height:.95;
+    text-transform:uppercase;font-weight:700;text-wrap:balance;}
+  .cover .sub{margin:6px 0 0;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem;}
+  .cover .meta{text-align:right;font-size:.78rem;line-height:1.5;}
+
+  .warnrow{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0 34px;}
+  .warn{border:2px solid var(--ink);padding:10px 14px;display:flex;gap:10px;align-items:center;
+    font-size:.78rem;letter-spacing:.04em;max-width:260px;}
+  .warn svg{flex:none;}
+
+  h2{font-size:1rem;letter-spacing:.22em;text-transform:uppercase;border-bottom:2px solid var(--ink);
+    padding-bottom:6px;margin:44px 0 18px;}
+  h2 .no{display:inline-block;min-width:1.6em;}
+
+  figure{margin:0;}
+  .panel{border:2px solid var(--ink);padding:10px;overflow-x:auto;}
+  svg{display:block;max-width:100%;height:auto;}
+  svg text{font-family:inherit;fill:var(--ink);}
+  .cap{font-size:.75rem;letter-spacing:.06em;margin-top:8px;}
+
+  table{border-collapse:collapse;width:100%;font-size:.85rem;font-variant-numeric:tabular-nums;}
+  th,td{border:1px solid var(--ink);padding:7px 9px;text-align:left;vertical-align:top;}
+  th{letter-spacing:.14em;text-transform:uppercase;font-size:.68rem;}
+  td.center,th.center{text-align:center;}
+
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+  .step{border:2px solid var(--ink);padding:12px;}
+  .step .n{font-size:1.9rem;font-weight:700;line-height:1;}
+  .step p{font-size:.8rem;line-height:1.5;margin:8px 0 0;}
+  .step svg{margin-top:6px;}
+
+  .revnote{border:2px dashed var(--accent);padding:12px 16px;font-size:.8rem;line-height:1.55;margin-top:14px;}
+  @media (prefers-reduced-motion: no-preference){ a{transition:opacity .15s;} a:hover{opacity:.7;} }
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px;}
+</style>
+
+<div class="sheet">
+
+<header class="cover">
+  <div>
+    <h1>Dammsug&nbsp;114</h1>
+    <p class="sub">twin-motor drum extractor · 114 L / 30 gal · PecosBill LVHP</p>
+  </div>
+  <div class="meta mono">
+    2 × 116392-class 900 W · 120 V · NEMA 5-20P<br>
+    ~160 CFM @ 20″ H₂O · sealed 81.8″ (20.4 kPa)<br>
+    basis: <span class="accent">phase-11-vacuum-source.md</span> §11.10–§11.11
+  </div>
+</header>
+
+<div class="warnrow" role="note">
+  <div class="warn">
+    <svg width="34" height="30" viewBox="0 0 34 30" aria-hidden="true">
+      <path d="M17 2 32 28H2Z" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="17" y="24" text-anchor="middle" font-size="14" font-weight="700">!</text>
+    </svg>
+    5-20P plug · 20 A circuit only · nothing else on it <span class="mono">(P11.26)</span>
+  </div>
+  <div class="warn">
+    <svg width="34" height="30" viewBox="0 0 34 30" aria-hidden="true">
+      <circle cx="17" cy="15" r="12" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M17 15 24 8" stroke="var(--ink)" stroke-width="2.5"/>
+    </svg>
+    clamp-meter one motor before buying the second <span class="mono">(Q-V5, P11.31)</span>
+  </div>
+  <div class="warn">
+    <svg width="34" height="30" viewBox="0 0 34 30" aria-hidden="true">
+      <rect x="4" y="10" width="26" height="12" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M11 10V4M23 10V4M13 22l-3 6M21 22l3 6" stroke="var(--ink)" stroke-width="2.5"/>
+    </svg>
+    relief valve ≈ 60″ H₂O before first run <span class="mono">(P11.36)</span>
+  </div>
+</div>
+
+<h2><span class="no">1.</span> Sprängskiss — exploded view</h2>
+<figure class="panel">
+<svg viewBox="0 0 780 1150" role="img" aria-label="Exploded view of the twin-motor drum extractor, parts numbered 1 to 15">
+  <defs>
+    <!-- one motor, reused; origin = center of fan housing base -->
+    <g id="motor">
+      <ellipse cx="0" cy="0" rx="52" ry="12" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M-52 0V-34a52 12 0 0 1 104 0V0" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M-34-40V-64a34 9 0 0 1 68 0V-40" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+      <ellipse cx="0" cy="-40" rx="34" ry="9" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M-24-68V-96a24 7 0 0 1 48 0V-68" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+      <ellipse cx="0" cy="-96" rx="24" ry="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M-14-96a14 4 0 0 1 28 0" stroke="var(--ink)" stroke-width="2" fill="none"/>
+      <!-- tangential exhaust horn -->
+      <path d="M40-18c22 2 34 10 34 22v10" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <ellipse cx="74" cy="16" rx="9" ry="4" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+      <!-- mount tabs -->
+      <path d="M-52-6h-12M52-6h12" stroke="var(--ink)" stroke-width="2.5"/>
+    </g>
+    <g id="ring"><ellipse rx="40" ry="10" fill="none" stroke="var(--ink)" stroke-width="4"/></g>
+    <g id="numbubble">
+      <circle r="14" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>
+    </g>
+  </defs>
+
+  <!-- assembly axes -->
+  <path d="M290 70V760M500 70V760" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="4 7" opacity=".55"/>
+
+  <!-- 13 cord + 12 electrical box, offset right -->
+  <g id="p-box">
+    <rect x="640" y="330" width="90" height="64" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <circle cx="662" cy="350" r="7" fill="none" stroke="var(--ink)" stroke-width="2"/>
+    <text x="662" y="376" text-anchor="middle" font-size="11">H·O·A</text>
+    <rect x="686" y="342" width="34" height="20" fill="none" stroke="var(--ink)" stroke-width="2"/>
+    <path d="M700 402c0 26-20 22-20 46" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M676 448h10v14h-10zM679 462v8M683 462v8" stroke="var(--ink)" stroke-width="2" fill="none"/>
+  </g>
+
+  <!-- 9 exhaust manifold, offset left of motors -->
+  <g id="p-manifold">
+    <path d="M120 210c-24 0-36 12-36 30v54" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M150 246c-40 0-66 6-66 24" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="84" cy="298" rx="11" ry="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M84 306v10m-4-6 4 6 4-6" stroke="var(--ink)" stroke-width="2" fill="none"/>
+  </g>
+
+  <!-- 6 clamp rings -->
+  <g id="p-clamps">
+    <use href="#ring" x="290" y="105"/><use href="#ring" x="500" y="105"/>
+  </g>
+
+  <!-- 5 motors -->
+  <g id="p-motors">
+    <use href="#motor" x="290" y="300"/><use href="#motor" x="500" y="300"/>
+  </g>
+
+  <!-- 4 TPU rings -->
+  <g id="p-tpu">
+    <ellipse cx="290" cy="365" rx="34" ry="8" fill="none" stroke="var(--ink)" stroke-width="5" opacity=".9"/>
+    <ellipse cx="500" cy="365" rx="34" ry="8" fill="none" stroke="var(--ink)" stroke-width="5" opacity=".9"/>
+  </g>
+
+  <!-- 3 plywood deck -->
+  <g id="p-deck">
+    <path d="M130 430a260 40 0 0 1 520 0v16a260 40 0 0 1-520 0Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="290" cy="430" rx="34" ry="8" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>
+    <ellipse cx="500" cy="430" rx="34" ry="8" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>
+    <ellipse cx="395" cy="447" rx="12" ry="4" fill="none" stroke="var(--ink)" stroke-width="2"/>
+    <ellipse cx="180" cy="440" rx="12" ry="4" fill="none" stroke="var(--ink)" stroke-width="2"/>
+  </g>
+
+  <!-- 2 steel lid -->
+  <g id="p-lid">
+    <path d="M120 520a270 36 0 0 1 540 0v8a270 36 0 0 1-540 0Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="290" cy="520" rx="34" ry="8" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>
+    <ellipse cx="500" cy="520" rx="34" ry="8" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>
+  </g>
+
+  <!-- 11 relief valve, right of lid -->
+  <g id="p-relief">
+    <rect x="655" y="492" width="26" height="20" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M661 492v-8h14v8M668 512v10" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+  </g>
+
+  <!-- 10 inlet bulkhead + down elbow, left of lid -->
+  <g id="p-inlet">
+    <path d="M95 520h44" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="92" cy="520" rx="6" ry="10" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M139 520c16 0 22 8 22 24v22" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M155 566l6 10 6-10" fill="none" stroke="var(--ink)" stroke-width="2"/>
+  </g>
+
+  <!-- 7 snorkels + 8 sleeves, below lid -->
+  <g id="p-snorkels">
+    <path d="M272 590h36v34h-36zM482 590h36v34h-36z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M278 596l24 22M302 596l-24 22M488 596l24 22M512 596l-24 22" stroke="var(--ink)" stroke-width="1.5"/>
+  </g>
+  <g id="p-sleeves">
+    <path d="M266 648h48v52a24 8 0 0 1-48 0ZM476 648h48v52a24 8 0 0 1-48 0Z"
+      fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="6 4"/>
+  </g>
+
+  <!-- 1 drum -->
+  <g id="p-drum">
+    <path d="M140 790a250 34 0 0 1 500 0v250a250 34 0 0 1-500 0Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="390" cy="790" rx="250" ry="34" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M140 875a250 34 0 0 0 500 0M140 960a250 34 0 0 0 500 0" fill="none" stroke="var(--ink)" stroke-width="1.5" opacity=".6"/>
+  </g>
+
+  <!-- 14 bolt ring, left of drum -->
+  <g id="p-boltring">
+    <path d="M60 770a52 20 0 1 0 40 6" fill="none" stroke="var(--ink)" stroke-width="4"/>
+    <path d="M104 782l14-8-4 16" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+  </g>
+
+  <!-- 15 hose to cyclone, bottom left -->
+  <g id="p-hose">
+    <path d="M40 560c-18 40-18 90 8 120" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="2 6"/>
+  </g>
+
+  <!-- number bubbles -->
+  <g font-size="13" font-weight="700" text-anchor="middle">
+    <g transform="translate(738,362)"><use href="#numbubble"/><text y="4.5">12</text></g>
+    <g transform="translate(654,470)"><use href="#numbubble"/><text y="4.5">13</text></g>
+    <g transform="translate(60,238)"><use href="#numbubble"/><text y="4.5">9</text></g>
+    <g transform="translate(210,92)"><use href="#numbubble"/><text y="4.5">6</text></g>
+    <g transform="translate(180,250)"><use href="#numbubble"/><text y="4.5">5</text></g>
+    <g transform="translate(210,368)"><use href="#numbubble"/><text y="4.5">4</text></g>
+    <g transform="translate(90,438)"><use href="#numbubble"/><text y="4.5">3</text></g>
+    <g transform="translate(84,488)"><use href="#numbubble"/><text y="4.5">2</text></g>
+    <g transform="translate(40,530)"><use href="#numbubble"/><text y="4.5">10</text></g>
+    <g transform="translate(712,528)"><use href="#numbubble"/><text y="4.5">11</text></g>
+    <g transform="translate(238,606)"><use href="#numbubble"/><text y="4.5">7</text></g>
+    <g transform="translate(238,676)"><use href="#numbubble"/><text y="4.5">8</text></g>
+    <g transform="translate(680,820)"><use href="#numbubble"/><text y="4.5">1</text></g>
+    <g transform="translate(48,720)"><use href="#numbubble"/><text y="4.5">14</text></g>
+    <g transform="translate(88,652)"><use href="#numbubble"/><text y="4.5">15</text></g>
+  </g>
+
+  <!-- leaders -->
+  <g stroke="var(--ink)" stroke-width="1.2" opacity=".7">
+    <path d="M224 92h26M194 250h44M224 368h32M104 438h28M98 488h30M718 362h-72M654 484v-6M700 528h-14M252 606h20M252 676h16M666 820h-20M62 720c10 16 20 30 30 40M96 640c-8-18-10-40-8-60"/>
+  </g>
+</svg>
+<figcaption class="cap">Vertical dashed lines = assembly axes through both motor positions. Steel lid seals; plywood deck stiffens; prints interface <span class="mono">(P11.32–P11.33)</span>.</figcaption>
+</figure>
+
+<h2><span class="no">2.</span> Komponenter — parts</h2>
+<table>
+  <thead><tr><th class="center">#</th><th>Part</th><th class="center">Qty</th><th>Source</th><th>Ref</th></tr></thead>
+  <tbody>
+    <tr><td class="center">1</td><td>Greif 30-gal open-head steel drum</td><td class="center">1</td><td>owned</td><td class="mono">P4.78</td></tr>
+    <tr><td class="center">2</td><td>Steel drum lid, 2 × Ø motor cutouts + inlet + relief holes</td><td class="center">1</td><td>drill via CNC template</td><td class="mono">P11.32</td></tr>
+    <tr><td class="center">3</td><td>Plywood deck, 18 mm, matching cutouts</td><td class="center">1</td><td>CNC</td><td class="mono">P11.32</td></tr>
+    <tr><td class="center">4</td><td>Motor seat gasket ring</td><td class="center">2</td><td>P1S · TPU</td><td class="mono">P11.33</td></tr>
+    <tr><td class="center">5</td><td>116392-class tangential bypass motor, 900 W / 120 V</td><td class="center">2</td><td>buy (verify amps first)</td><td class="mono">S-V7, Q-V5</td></tr>
+    <tr><td class="center">6</td><td>Motor clamp ring, 3 × M5</td><td class="center">2</td><td>P1S · PETG</td><td class="mono">P11.33</td></tr>
+    <tr><td class="center">7</td><td>Intake snorkel with gravity flap</td><td class="center">2</td><td>P1S · PETG + TPU hinge</td><td class="mono">P11.34–P11.35</td></tr>
+    <tr><td class="center">8</td><td>Cloth pre-filter sleeve (washable)</td><td class="center">2 + spares</td><td>buy</td><td class="mono">P11.34</td></tr>
+    <tr><td class="center">9</td><td>Exhaust elbows → common manifold, foam-lined, 2.5″ outlet</td><td class="center">1 set</td><td>P1S · PETG/ASA</td><td class="mono">P11.35</td></tr>
+    <tr><td class="center">10</td><td>2.5″ inlet bulkhead + internal down-elbow</td><td class="center">1</td><td>P1S · PETG</td><td class="mono">P11.34</td></tr>
+    <tr><td class="center">11</td><td>Vacuum relief valve, set ≈ 60″ H₂O</td><td class="center">1</td><td>buy — do not print</td><td class="mono">P11.36</td></tr>
+    <tr><td class="center">12</td><td>Electrical box: 2-pole 20 A contactor (24 V coil), H-O-A, 0.5–1 s on-delay, 20 s off-delay, 2 × rocker, 2 × 10 A fuse</td><td class="center">1</td><td>buy + P1S/CNC box</td><td class="mono">P11.37–P11.38</td></tr>
+    <tr><td class="center">13</td><td>Cord 12 AWG SJOOW + NEMA 5-20P</td><td class="center">1</td><td>buy</td><td class="mono">P11.26</td></tr>
+    <tr><td class="center">14</td><td>Drum bolt-ring closure + gasket</td><td class="center">1</td><td>with drum — check gasket</td><td class="mono">P4.73</td></tr>
+    <tr><td class="center">15</td><td>2.5″ hose + cuffs, cyclone → drum</td><td class="center">1</td><td>buy</td><td class="mono">P11.27</td></tr>
+  </tbody>
+</table>
+
+<h2><span class="no">3.</span> Montering — assembly</h2>
+<div class="steps">
+  <div class="step"><span class="n">1</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <ellipse cx="95" cy="62" rx="70" ry="26" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <ellipse cx="70" cy="56" rx="16" ry="6" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <ellipse cx="122" cy="56" rx="16" ry="6" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <path d="M178 30v34m0 0-8-10m8 10 8-10" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+      <path d="M170 22h16l-8 10z" fill="var(--ink)"/>
+    </svg>
+    <p>CNC the deck <b>(3)</b> and the steel-lid drill template from one 18 mm ply sheet. Two motor cutouts, inlet, relief, box mounts.</p></div>
+
+  <div class="step"><span class="n">2</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <ellipse cx="95" cy="70" rx="70" ry="24" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M160 20l-24 30" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M156 14l12 8-6 8-12-8z" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="70" cy="64" r="7" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+      <circle cx="120" cy="64" r="7" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+    </svg>
+    <p>Clamp template to the steel lid <b>(2)</b>, drill and cut. Deburr both faces — hole edges are the lid's only stress raisers <span class="mono">(P4.95)</span>.</p></div>
+
+  <div class="step"><span class="n">3</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <path d="M40 46h140v14H40zM40 70h140v8H40z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M70 20v58M150 20v58" stroke="var(--ink)" stroke-width="2"/>
+      <path d="M64 20h12M144 20h12M66 84h8M146 84h8" stroke="var(--ink)" stroke-width="2.5"/>
+      <text x="196" y="60" font-size="12" class="mono">M5</text>
+    </svg>
+    <p>Through-bolt deck <b>(3)</b> onto lid <b>(2)</b>, fender washers below, foam tape between. Steel seals, ply stiffens <span class="mono">(P11.32)</span>.</p></div>
+
+  <div class="step"><span class="n">4</span>
+    <svg viewBox="0 0 220 130" aria-hidden="true">
+      <use href="#motor" transform="translate(110,86) scale(.62)"/>
+      <ellipse cx="110" cy="100" rx="26" ry="6" fill="none" stroke="var(--ink)" stroke-width="4"/>
+      <path d="M110 12v22m0 0-7-9m7 9 7-9" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+    </svg>
+    <p>TPU ring <b>(4)</b> into each seat; motor <b>(5)</b> fan-eye-down onto ring; clamp ring <b>(6)</b> over tabs, 3 × M5. Vacuum self-seats it when running <span class="mono">(P11.33)</span>.</p></div>
+
+  <div class="step"><span class="n">5</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <path d="M40 30h140v10H40z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M92 40h36v26H92z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M86 74h48v30a24 7 0 0 1-48 0z" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="6 4"/>
+      <path d="M110 52l10 10M120 52l-10 10" stroke="var(--ink)" stroke-width="1.5"/>
+    </svg>
+    <p>Under the lid: snorkel + gravity flap <b>(7)</b> onto each motor eye, cloth sleeve <b>(8)</b> over snorkel. Idle motor = sealed motor <span class="mono">(P11.14, P11.34)</span>.</p></div>
+
+  <div class="step"><span class="n">6</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <path d="M60 30c0 18 12 26 30 26h40c18 0 30 8 30 26" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M150 30c0 12 5 20 10 26" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <ellipse cx="160" cy="88" rx="12" ry="5" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M156 96l4 8 4-8" fill="none" stroke="var(--ink)" stroke-width="2"/>
+    </svg>
+    <p>Exhaust elbows off both horns into the common manifold <b>(9)</b>, foam-lined, one 2.5″ outlet aimed down. Heat, brush dust, noise — away <span class="mono">(P11.35)</span>.</p></div>
+
+  <div class="step"><span class="n">7</span>
+    <svg viewBox="0 0 220 130" aria-hidden="true">
+      <text x="10" y="26" font-size="11" class="mono">24V CNC</text>
+      <path d="M76 22h28" stroke="var(--ink)" stroke-width="2"/>
+      <rect x="104" y="10" width="44" height="24" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <text x="126" y="26" font-size="10" text-anchor="middle">H·O·A</text>
+      <path d="M126 34v14" stroke="var(--ink)" stroke-width="2"/>
+      <rect x="100" y="48" width="52" height="24" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <text x="126" y="64" font-size="10" text-anchor="middle">contactor</text>
+      <path d="M112 72v16M140 72v8" stroke="var(--ink)" stroke-width="2"/>
+      <rect x="128" y="80" width="42" height="18" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <text x="149" y="93" font-size="9" text-anchor="middle">0.5–1 s</text>
+      <circle cx="112" cy="102" r="12" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="152" cy="112" r="12" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <text x="112" y="106" font-size="10" text-anchor="middle">M1</text>
+      <text x="152" y="116" font-size="10" text-anchor="middle">M2</text>
+    </svg>
+    <p>Box <b>(12)</b>: cord <b>(13)</b> → fuses → contactor (24 V coil ← CNC out, <b>verify VDC vs VAC</b>). Motor 2 through the on-delay — two inrushes never share a half-second <span class="mono">(P11.37–P11.38)</span>.</p></div>
+
+  <div class="step"><span class="n">8</span>
+    <svg viewBox="0 0 220 130" aria-hidden="true">
+      <ellipse cx="110" cy="46" rx="62" ry="14" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M48 60a62 14 0 0 0 124 0V56" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M48 58v46a62 16 0 0 0 124 0V58" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M110 6v20m0 0-8-10m8 10 8-10" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+      <path d="M30 52c-8 6-8 14 0 20" fill="none" stroke="var(--ink)" stroke-width="3"/>
+    </svg>
+    <p>Lid assembly onto drum <b>(1)</b>, bolt ring <b>(14)</b> closed, relief valve <b>(11)</b> in, hose <b>(15)</b> from cyclone, plug into the 20 A outlet. First run: one motor + clamp meter <span class="mono">(Q-V5)</span>.</p></div>
+</div>
+
+<h2><span class="no">4.</span> Revision — edit as the design evolves</h2>
+<table>
+  <thead><tr><th class="center">Rev</th><th>Date</th><th>Change</th><th>Basis</th></tr></thead>
+  <tbody>
+    <tr><td class="center">A</td><td class="mono">2026-08-01</td><td>Initial issue: 2 × 900 W parallel, single 5-20P cord, motors-on-lid with ply deck.</td><td class="mono">P11.25, §11.11</td></tr>
+    <!-- Add revision rows above this line -->
+  </tbody>
+</table>
+<div class="revnote">
+  <b>How to edit this document:</b> parts are <span class="mono">&lt;g id="p-…"&gt;</span> groups in the exploded SVG — geometry lives there, part identity lives once in the Komponenter table, and every change gets a Rev row. Colors only via the tokens at the top so both themes stay correct. Design authority remains <span class="mono">docs/research/phase-11-vacuum-source.md</span>; this sheet is its picture.
+</div>
+
+</div>
