@@ -27,6 +27,7 @@ the corrections; where §11.4–§11.5 conflict with §11.9, §11.9 governs.
 | Key | Source | Tier basis |
 |---|---|---|
 | `S-V7` | User screenshot of the linked listing: 116392-00-pattern clone, 120 V 50/60 Hz, 5.7", 2-stage tangential bypass, **900 W (≈7.5 A)**, **97.0 CFM @ 2" orifice**, **81.8" H₂O sealed**, Class B, open enclosure | C (weak — clone marketing card, no curve) |
+| `S-V8` | User screenshots (2026-08-01): 116765-13/00-pattern clone, 120 V, 5.7", 3-stage tangential bypass, **1400 W (≈11.7 A)**, **95.3 CFM @ 2" orifice**, **136" H₂O sealed**, 8" tall, Class B open | C (weak — same caveat) |
 
 ## 11.2 Duty restated (from phase 8)
 
@@ -97,7 +98,34 @@ system ceiling (`P8.91`).
 | `Q-V2` | Greif 30-gal drum collapse pressure (test to failure with the spare, or find rating). Sets the relief valve margin. Stakes lowered by `P11.21` (20.4 kPa max vs 32). | `P11.17` |
 | ~~`Q-V3`~~ | **DISSOLVED by `P11.20`** — three motors now fit the two circuits already available; no second 20 A circuit needed. | — |
 | `Q-V4` | Filter/separator order on the vacuum drum itself (CamVac-style internal cartridge vs bag) — separate phase; the cyclone upstream changes the loading assumptions vs a stock CamVac. | build 2 |
-| `Q-V5` | Clone quality: `S-V7` card gives no duty rating, no brush spec, no curve. Buy one, run it hard for an hour, measure flow (`V9.17` rig) and temperature before ordering the fleet. | `P11.20` |
+| `Q-V5` | Clone quality: `S-V7` card gives no duty rating, no brush spec, no curve. Buy one, run it hard for an hour, measure flow (`V9.17` rig) and temperature before ordering the fleet. | `P11.25` |
+
+## 11.10 Constraint added: single plug, single circuit (user decision, 2026-08-01)
+
+`C-V1`: **the device runs from one cord and one plug on one branch circuit.** No
+multi-circuit wiring. This supersedes the circuit-allocation half of §11.9; the
+topology findings (`P11.05`–`P11.08`) stand.
+
+The whole trade now reduces to one number: **~1800 W nameplate is the most a single
+120 V plug can carry** (20 A circuit, 16 A continuous budget). The only question is
+how to spend it, and §11.2 already answered that: on flow, not lift.
+
+| Config (one plug) | Nameplate | CFM @ ~20" duty | Verdict |
+|---|---|---|---|
+| **2 × `S-V7` 900 W parallel** | **15.0 A** | **~160–165** | **selected — most flow a plug can buy** |
+| 1 × 8.4" 2-stage (~13 A, 142 CFM @ 2") | ~13 A | ~125–130 | fewer parts, 20 % less flow, no staged mode |
+| 1 × `S-V8` 1400 W | 11.7 A | ~88 | half the flow; lift nobody needs |
+| 1 × `S-V7` 900 W | 7.5 A | ~80 | runs on any outlet; underuses even a 15 A circuit |
+| 2 × `S-V8` 1400 W | 23.3 A | — | violates `C-V1` on any single circuit |
+
+| ID | Claim | Tier |
+|---|---|---|
+| `P11.24` | `S-V8` (1400 W / 136" / 95.3 CFM) buys **lift, not flow** — 95.3 CFM vs 97.0 for the 900 W unit, at 1.56× the amps. Under `C-V1` amps are the whole budget, so `S-V8` is the wrong motor for this duty in any count. Flow-per-amp: 12.9 (`S-V7`) vs 8.1 (`S-V8`). | E (verified) |
+| `P11.25` | **Final configuration (supersedes `P11.20`, `P11.22`, `P11.23`): 2 × `S-V7` 900 W motors, parallel on the drum lid, one cord with a NEMA 5-20P plug into the 20 A outlet.** 15 A nameplate ≤ 16 A continuous budget; ~13.5 A working. Independent motor switches stay (`P11.14` — staged mode + staggered inrush), sealed lift stays 81.8" (20.4 kPa, `P11.21`). This is electrically the twin-motor 110 V CamVac (`S-V2`), one plug and all. | E (verified) |
+| `P11.26` | The 5-20P plug is required, not optional: a 15 A nameplate cord-connected appliance does not belong on a 5-15P/15 A receptacle (12 A continuous ceiling). The 15 A outlet is not a fallback for the pair — fallback on a 15 A-only circuit is running **one** motor (7.5 A), which the independent switches give for free. | C/E |
+| `P11.27` | Duty point becomes **~160 CFM plateau** (was ~235–255 under the 3-motor plan). Consequences: branch duct at **2.5"** holds transport (23.8 m/s); 3" is marginal (16.6 m/s < 20.3); the 3.5" boot port runs ~12 m/s — keep the boot run short and vertical-ish, expect some settling in it (`P8.94` discipline applies double). | E (verified) |
+| `P11.28` | Cyclone regen target at the plateau: `D` ≈ **200 mm**, `x50` ≈ **4.45 µm**, printable whole on the P1S (`P8.69`) — build 2 gets *simpler* under `C-V1`: no segmented courses, no diffuser question at 1.0× area ratio (`P8.95` re-check at 160 CFM). Measure first (`V9.17`), then generate. | E |
+| `P11.29` | Capture expectation, stated honestly: 160 CFM is ~60 % of the 265 CFM port ceiling — a large step up from 55, still short of full-boot capture on heavy sheet-goods cuts (`P8.82` softened, not erased). The upgrade path that respects `C-V1` is a second identical single-plug unit on the other circuit later (per-branch extraction), not more motors on this one. | E |
 
 ## 11.9 Q-V1 resolved — the 900 W motor changes the answer for the better
 
