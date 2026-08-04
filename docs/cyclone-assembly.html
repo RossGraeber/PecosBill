@@ -1,0 +1,373 @@
+<title>CYKLON 325 — sc0075 cyclone separator assembly</title>
+<!--
+  CYKLON 325 — IKEA-style assembly design document
+  PecosBill sc0075 cyclone (SC0075 HVLP duty). Design basis:
+  docs/research/phase-12-hvlp-source.md (P12.xx) + out/sc0075/report.md.
+  Printed parts regenerate from:  uv run python cyclone.py --preset sc0075
+
+  EDITABLE DESIGN DOC — how to evolve it:
+    • Every part is an SVG <g id="p-..."> in the exploded view; edit geometry there.
+    • Part numbers, quantities and sourcing live ONCE in the "Komponenter" table.
+    • Add a row to the REV table at the bottom when the design changes.
+    • All strokes use var(--ink); never hardcode colors, both themes come from tokens.
+-->
+<style>
+  :root{
+    --paper:#ffffff; --ink:#1c1c1e; --accent:#0058a3; --amber:#e8a013;
+    --faint:rgba(28,28,30,.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --paper:#131720; --ink:#e6e9ee; --accent:#7fb0e0; --faint:rgba(230,233,238,.12); }
+  }
+  :root[data-theme="dark"]{ --paper:#131720; --ink:#e6e9ee; --accent:#7fb0e0; --faint:rgba(230,233,238,.12); }
+  :root[data-theme="light"]{ --paper:#ffffff; --ink:#1c1c1e; --accent:#0058a3; --faint:rgba(28,28,30,.10); }
+
+  html,body{background:var(--paper);color:var(--ink);margin:0;
+    font-family:Futura,"Century Gothic","URW Geometric","Trebuchet MS",Verdana,sans-serif;}
+  .sheet{max-width:920px;margin:0 auto;padding:28px 20px 80px;}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82em;}
+  .accent{color:var(--accent);}
+  a{color:var(--accent);}
+
+  header.cover{border:2px solid var(--ink);padding:22px 24px 18px;display:flex;
+    flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:space-between;}
+  h1{font-size:clamp(2.4rem,7vw,4rem);letter-spacing:.06em;margin:0;line-height:.95;
+    text-transform:uppercase;font-weight:700;text-wrap:balance;}
+  .cover .sub{margin:6px 0 0;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem;}
+  .cover .meta{text-align:right;font-size:.78rem;line-height:1.5;}
+
+  .warnrow{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0 34px;}
+  .warn{border:2px solid var(--ink);padding:10px 14px;display:flex;gap:10px;align-items:center;
+    font-size:.78rem;letter-spacing:.04em;max-width:260px;}
+  .warn svg{flex:none;}
+
+  h2{font-size:1rem;letter-spacing:.22em;text-transform:uppercase;border-bottom:2px solid var(--ink);
+    padding-bottom:6px;margin:44px 0 18px;}
+  h2 .no{display:inline-block;min-width:1.6em;}
+
+  figure{margin:0;}
+  .panel{border:2px solid var(--ink);padding:10px;overflow-x:auto;}
+  svg{display:block;max-width:100%;height:auto;}
+  svg text{font-family:inherit;fill:var(--ink);}
+  .cap{font-size:.75rem;letter-spacing:.06em;margin-top:8px;}
+
+  table{border-collapse:collapse;width:100%;font-size:.85rem;font-variant-numeric:tabular-nums;}
+  th,td{border:1px solid var(--ink);padding:7px 9px;text-align:left;vertical-align:top;}
+  th{letter-spacing:.14em;text-transform:uppercase;font-size:.68rem;}
+  td.center,th.center{text-align:center;}
+
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+  .step{border:2px solid var(--ink);padding:12px;}
+  .step .n{font-size:1.9rem;font-weight:700;line-height:1;}
+  .step p{font-size:.8rem;line-height:1.5;margin:8px 0 0;}
+  .step svg{margin-top:6px;}
+
+  .revnote{border:2px dashed var(--accent);padding:12px 16px;font-size:.8rem;line-height:1.55;margin-top:14px;}
+  @media (prefers-reduced-motion: no-preference){ a{transition:opacity .15s;} a:hover{opacity:.7;} }
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px;}
+</style>
+
+<div class="sheet">
+
+<header class="cover">
+  <div>
+    <h1>Cyklon&nbsp;325</h1>
+    <p class="sub">cyclone separator · D 325 / H 1300 mm · CNC → cyklon → SC0075</p>
+  </div>
+  <div class="meta mono">
+    350 CFM · v<sub>in</sub> 12.5 m/s · Δp 3.0″ H₂O · x₅₀ 6.2 µm<br>
+    20 printed parts · ~5.4 kg PETG · Greif 30-gal drum<br>
+    basis: <span class="accent">phase-12-hvlp-source.md</span> · <span class="accent">out/sc0075/report.md</span>
+  </div>
+</header>
+
+<div class="warnrow" role="note">
+  <div class="warn">
+    <svg width="34" height="30" viewBox="0 0 34 30" aria-hidden="true">
+      <path d="M17 2 32 28H2Z" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="17" y="24" text-anchor="middle" font-size="14" font-weight="700">!</text>
+    </svg>
+    foam-seal every joint — one leak costs more than any geometry <span class="mono">(P8.28)</span>
+  </div>
+  <div class="warn">
+    <svg width="34" height="30" viewBox="0 0 34 30" aria-hidden="true">
+      <circle cx="17" cy="15" r="12" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <circle cx="17" cy="15" r="6" fill="none" stroke="var(--ink)" stroke-width="2"/>
+    </svg>
+    5 wall loops · 0 % infill — the shell IS the perimeters <span class="mono">(M3, P7.10)</span>
+  </div>
+  <div class="warn">
+    <svg width="34" height="30" viewBox="0 0 34 30" aria-hidden="true">
+      <path d="M4 24C10 24 12 8 20 8h10" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M24 4l6 4-6 4" fill="none" stroke="var(--ink)" stroke-width="2"/>
+    </svg>
+    hose runs short + sloped: at/below transport velocity <span class="mono">(P12.08)</span>
+  </div>
+</div>
+
+<h2><span class="no">1.</span> Sprängskiss — exploded view</h2>
+<figure class="panel">
+<svg viewBox="0 0 780 1560" role="img" aria-label="Exploded view of the sc0075 cyclone, parts numbered 1 to 15">
+  <defs>
+    <marker id="lead" markerWidth="8" markerHeight="8" refX="4" refY="4">
+      <circle cx="4" cy="4" r="2" fill="var(--ink)"/>
+    </marker>
+  </defs>
+  <!-- centre axis -->
+  <path d="M390 24V1544" stroke="var(--faint)" stroke-width="2" stroke-dasharray="10 8"/>
+
+  <!-- ═ 8 outlet adapter -->
+  <g id="p-outlet-adapter">
+    <path d="M362 40h56v26h-56z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="390" cy="40" rx="28" ry="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M362 66 322 118v22h136v-22l-40-52" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="390" cy="140" rx="68" ry="14" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+  </g>
+  <path d="M390 158v30m0 0-8-10m8 10 8-10" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+
+  <!-- ═ 7 vortex finder -->
+  <g id="p-vortex-finder">
+    <ellipse cx="390" cy="206" rx="60" ry="13" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M330 206v84m120-84v84" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="390" cy="290" rx="72" ry="14" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="390" cy="290" rx="60" ry="12" fill="none" stroke="var(--ink)" stroke-width="2"/>
+  </g>
+  <path d="M390 310v28m0 0-8-10m8 10 8-10" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+
+  <!-- ═ 9 inlet duct, off to the left of the top course -->
+  <g id="p-inlet-duct">
+    <path d="M60 402h34v96H60z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M94 414h44l36 22v24l-36 22H94z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="176" cy="448" rx="10" ry="24" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <circle cx="70" cy="412" r="3.5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+    <circle cx="70" cy="488" r="3.5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+    <circle cx="84" cy="412" r="3.5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+    <circle cx="84" cy="488" r="3.5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+  </g>
+  <path d="M206 448h40m0 0-10-8m10 8-10 8" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+
+  <!-- ═ 6 top barrel course: roof + inlet frame, x4 arcs -->
+  <g id="p-course-6">
+    <ellipse cx="390" cy="368" rx="130" ry="24" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="390" cy="368" rx="66" ry="13" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="5 4"/>
+    <path d="M260 368v120m260-120v120" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M260 488a130 24 0 0 0 260 0" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M325 391v110M455 391v110" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M262 402h-14v58h14" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+  </g>
+  <path d="M390 522v26m0 0-8-10m8 10 8-10" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+
+  <!-- ═ 5 barrel/cone junction course, x4 arcs -->
+  <g id="p-course-5">
+    <ellipse cx="390" cy="576" rx="130" ry="24" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M260 576v72m260-72v72" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M260 648 268 700m252-52-8 52" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M268 700a122 22 0 0 0 244 0" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M325 598v112M455 598v112" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="6 4"/>
+  </g>
+  <path d="M390 730v26m0 0-8-10m8 10 8-10" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+
+  <!-- ═ 4 cone course, x4 arcs -->
+  <g id="p-course-4">
+    <ellipse cx="390" cy="786" rx="120" ry="22" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M270 786 290 900m220-114-20 114" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M290 900a100 18 0 0 0 200 0" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M330 806v104M450 806v104" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="6 4"/>
+  </g>
+  <path d="M390 928v26m0 0-8-10m8 10 8-10" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+
+  <!-- ═ 3 cone course, x3 arcs -->
+  <g id="p-course-3">
+    <ellipse cx="390" cy="982" rx="98" ry="18" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M292 982 310 1092m178-110-18 110" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M310 1092a80 15 0 0 0 160 0" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M348 998v104M432 998v104" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="6 4"/>
+  </g>
+  <path d="M390 1116v24m0 0-8-10m8 10 8-10" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+
+  <!-- ═ 2 cone course, whole -->
+  <g id="p-course-2">
+    <ellipse cx="390" cy="1166" rx="78" ry="15" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M312 1166 328 1256m124-90-16 90" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M328 1256a62 12 0 0 0 124 0" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+  </g>
+  <path d="M390 1276v22m0 0-8-10m8 10 8-10" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+
+  <!-- ═ 1 cone tip, whole -->
+  <g id="p-course-1">
+    <ellipse cx="390" cy="1318" rx="58" ry="11" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M332 1318 356 1392m92-74-24 74" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M356 1392a34 7 0 0 0 68 0" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+  </g>
+  <path d="M390 1404v18m0 0-8-8m8 8 8-8" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+
+  <!-- ═ 10 lid socket, 12 drum lid, 13 drum -->
+  <g id="p-lid-socket">
+    <ellipse cx="390" cy="1434" rx="62" ry="12" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="390" cy="1434" rx="38" ry="8" fill="none" stroke="var(--ink)" stroke-width="2"/>
+  </g>
+  <g id="p-drum-lid">
+    <ellipse cx="390" cy="1466" rx="150" ry="20" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="390" cy="1466" rx="36" ry="7" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="5 4"/>
+  </g>
+  <g id="p-drum">
+    <path d="M244 1494v46m292-46v46" stroke="var(--ink)" stroke-width="2.5"/>
+    <ellipse cx="390" cy="1494" rx="146" ry="19" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+    <path d="M244 1540a146 19 0 0 0 292 0" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+  </g>
+
+  <!-- ═ numbers + leaders -->
+  <g font-size="17" font-weight="700">
+    <path d="M470 100H548" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="566" cy="100" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="566" y="106" text-anchor="middle">8</text>
+    <path d="M462 248H548" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="566" cy="248" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="566" y="254" text-anchor="middle">7</text>
+    <path d="M76 530V560" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="76" cy="578" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="76" y="584" text-anchor="middle">9</text>
+    <path d="M524 430H600" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="618" cy="430" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="618" y="436" text-anchor="middle">6</text>
+    <text x="644" y="436" font-size="12" font-weight="400" class="mono">× 4</text>
+    <path d="M518 640H600" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="618" cy="640" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="618" y="646" text-anchor="middle">5</text>
+    <text x="644" y="646" font-size="12" font-weight="400" class="mono">× 4</text>
+    <path d="M506 848H600" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="618" cy="848" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="618" y="854" text-anchor="middle">4</text>
+    <text x="644" y="854" font-size="12" font-weight="400" class="mono">× 4</text>
+    <path d="M482 1040H600" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="618" cy="1040" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="618" y="1046" text-anchor="middle">3</text>
+    <text x="644" y="1046" font-size="12" font-weight="400" class="mono">× 3</text>
+    <path d="M462 1210H600" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="618" cy="1210" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="618" y="1216" text-anchor="middle">2</text>
+    <path d="M442 1356H600" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="618" cy="1356" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="618" y="1362" text-anchor="middle">1</text>
+    <path d="M320 1434H240" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="222" cy="1434" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="222" y="1440" text-anchor="middle">10</text>
+    <path d="M232 1466H180" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="162" cy="1466" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="162" y="1472" text-anchor="middle">12</text>
+    <path d="M240 1520H180" stroke="var(--ink)" stroke-width="1.5" marker-start="url(#lead)"/>
+    <circle cx="162" cy="1520" r="16" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="162" y="1526" text-anchor="middle">13</text>
+  </g>
+</svg>
+<figcaption class="cap">Dashed verticals = axial arc seams (bolted webs behind the wall). Every horizontal joint is a flanged ring with an external register lip. Inlet duct <b>(9)</b> bolts to the frame on segment <span class="mono">course_06_arc2</span>.</figcaption>
+</figure>
+
+<h2><span class="no">2.</span> Komponenter — parts</h2>
+<table>
+  <thead><tr><th class="center">#</th><th>Part</th><th class="center">Qty</th><th>Source</th><th>Ref</th></tr></thead>
+  <tbody>
+    <tr><td class="center">1</td><td>Cone tip course <span class="mono">body_course_01</span> (whole ring, 164 mm)</td><td class="center">1</td><td>P1S · PETG</td><td class="mono">P12.06</td></tr>
+    <tr><td class="center">2</td><td>Cone course <span class="mono">body_course_02</span> (whole ring)</td><td class="center">1</td><td>P1S · PETG</td><td class="mono">P12.06</td></tr>
+    <tr><td class="center">3</td><td>Cone course <span class="mono">body_course_03_arc1–3</span> (120° segments)</td><td class="center">3</td><td>P1S · PETG</td><td class="mono">S8, P8.103</td></tr>
+    <tr><td class="center">4</td><td>Cone course <span class="mono">body_course_04_arc1–4</span> (90° segments)</td><td class="center">4</td><td>P1S · PETG</td><td class="mono">S8, P8.103</td></tr>
+    <tr><td class="center">5</td><td>Junction course <span class="mono">body_course_05_arc1–4</span> (90° segments)</td><td class="center">4</td><td>P1S · PETG</td><td class="mono">S8, P8.103</td></tr>
+    <tr><td class="center">6</td><td>Roof course <span class="mono">body_course_06_arc1–4</span> — arc2 carries the inlet frame</td><td class="center">4</td><td>P1S · PETG</td><td class="mono">P12.06</td></tr>
+    <tr><td class="center">7</td><td>Vortex finder, De 162.5, drop-in tube (re-printable alone)</td><td class="center">1</td><td>P1S · PETG</td><td class="mono">F2, P8.61</td></tr>
+    <tr><td class="center">8</td><td>Outlet adapter: sleeve over finder stub → 4″ hose spigot</td><td class="center">1</td><td>P1S · PETG</td><td class="mono">P12.07</td></tr>
+    <tr><td class="center">9</td><td>Inlet duct: bolt-on frame + rect→round diffuser + 4″ spigot</td><td class="center">1</td><td>P1S · PETG</td><td class="mono">D8, P12.07</td></tr>
+    <tr><td class="center">10</td><td>Lid socket (cone-tip receiver, bolts around lid hole)</td><td class="center">1</td><td>P1S · PETG</td><td class="mono">P4.95</td></tr>
+    <tr><td class="center">11</td><td>M4 × 16 bolts + nyloc nuts: 47 flange + 45 seam + 6 inlet ≈ <b>100</b></td><td class="center">~100</td><td>buy</td><td class="mono">P7.14</td></tr>
+    <tr><td class="center">12</td><td>Steel drum lid: Ø 90 mm centre hole, 6 × 5.5 mm on 122 mm BC + M5 × 6</td><td class="center">1</td><td>drill + deburr</td><td class="mono">P4.95</td></tr>
+    <tr><td class="center">13</td><td>Greif 30-gal open-head drum + bolt ring + gasket</td><td class="center">1 (+1 swap)</td><td>owned</td><td class="mono">Q5, D6</td></tr>
+    <tr><td class="center">14</td><td>Foam sealing tape (flange faces + seam webs) / silicone bead</td><td class="center">1 roll</td><td>buy</td><td class="mono">P8.100</td></tr>
+    <tr><td class="center">15</td><td>4″ hose + cuffs: CNC boot → inlet <b>(9)</b>, adapter <b>(8)</b> → SC0075</td><td class="center">2 runs</td><td>buy / with SC0075</td><td class="mono">P12.08</td></tr>
+  </tbody>
+</table>
+
+<h2><span class="no">3.</span> Montering — assembly</h2>
+<div class="steps">
+  <div class="step"><span class="n">1</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <rect x="30" y="24" width="90" height="72" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M40 96V50l18 12 18-24 18 30 16-14v42" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <text x="150" y="50" font-size="11" class="mono">×20</text>
+      <text x="150" y="70" font-size="11" class="mono">5 loops</text>
+      <text x="150" y="90" font-size="11" class="mono">0% infill</text>
+    </svg>
+    <p>Print all 20 parts: cone courses/arcs wide-end down, roof arcs roof-down, duct and adapter flange/sleeve-down. PETG, 0.45 mm loops × 5, no supports. ~5.4 kg total.</p></div>
+
+  <div class="step"><span class="n">2</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <path d="M60 20a52 20 0 0 1 100 0" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M60 20v56a52 20 0 0 0 30 18M160 20v56a52 20 0 0 1-30 18" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M110 8v100" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="6 4"/>
+      <circle cx="102" cy="40" r="3.5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+      <circle cx="118" cy="40" r="3.5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+      <circle cx="102" cy="76" r="3.5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+      <circle cx="118" cy="76" r="3.5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+    </svg>
+    <p>Ring up each split course on the bench: foam tape on the web faces, M4 through the mating webs — 3 bolts per seam. Snug, don't crush: seams are in compression in service <span class="mono">(P8.100)</span>. Four rings: <b>(3)</b> <b>(4)</b> <b>(5)</b> <b>(6)</b>.</p></div>
+
+  <div class="step"><span class="n">3</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <path d="M70 34h80l6 10H64z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M62 60h96l6 10H56z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M54 70h4v14h-4M162 70h4v14h-4" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <path d="M110 8v18m0 0-7-9m7 9 7-9" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+      <text x="176" y="80" font-size="11" class="mono">lip</text>
+    </svg>
+    <p>Stack bottom-up, <b>(1)</b> → <b>(6)</b>: foam on each flange face, drop the upper course into the lower course's register lip, bolt the flange ring. Bolt counts grow with radius (6…12) — every hole gets a bolt <span class="mono">(P7.14)</span>.</p></div>
+
+  <div class="step"><span class="n">4</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <path d="M140 20v80" stroke="var(--ink)" stroke-width="2.5"/>
+      <rect x="140" y="34" width="10" height="52" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <path d="M60 44h50l30 8v16l-30 8H60z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <ellipse cx="60" cy="60" rx="7" ry="16" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M118 30l16 10M118 90l16-10" stroke="var(--ink)" stroke-width="1.5"/>
+    </svg>
+    <p>Bolt the inlet duct <b>(9)</b> to the frame on <span class="mono">course_06_arc2</span>: foam gasket, 6 × M4, U-pattern (roof caps the top edge). The morph is a diffuser — hose 21 m/s in, 12.5 m/s at the scroll <span class="mono">(P12.07)</span>.</p></div>
+
+  <div class="step"><span class="n">5</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <ellipse cx="110" cy="70" rx="80" ry="18" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <circle cx="110" cy="66" r="12" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="70" cy="70" r="3.5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+      <circle cx="150" cy="70" r="3.5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+      <path d="M164 24l-30 30" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M160 18l14 10-8 8-14-10z" fill="none" stroke="var(--ink)" stroke-width="2"/>
+    </svg>
+    <p>Drum lid <b>(12)</b>: Ø 90 mm centre hole, 6 × 5.5 mm on the 122 mm bolt circle. <b>Deburr both faces</b> — the hole edge is the lid's one stress raiser <span class="mono">(P4.95)</span>. Bolt the lid socket <b>(10)</b> around it, gasket between.</p></div>
+
+  <div class="step"><span class="n">6</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <path d="M96 14h28l8 26H88z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M88 52h44v10H88z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <ellipse cx="110" cy="78" rx="66" ry="12" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M110 40v8m0 0-6-7m6 7 6-7" stroke="var(--ink)" stroke-width="2" fill="none"/>
+      <path d="M44 84a66 12 0 0 0 132 0v18a66 14 0 0 1-132 0z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+    </svg>
+    <p>Cone tip <b>(1)</b> slides into the socket <b>(10)</b>, 0.3 mm/side. Set the assembled body on, close the drum bolt ring. Check the drum gasket — the bin is the dominant loss path <span class="mono">(rank 2, P4.10)</span>.</p></div>
+
+  <div class="step"><span class="n">7</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <ellipse cx="110" cy="86" rx="70" ry="14" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M92 20h36v40H92z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <ellipse cx="110" cy="20" rx="18" ry="5" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <path d="M110 64v14m0 0-7-9m7 9 7-9" stroke="var(--ink)" stroke-width="2.5" fill="none"/>
+    </svg>
+    <p>Drop the vortex finder <b>(7)</b> through the roof bore, collar seated. Slip the outlet adapter <b>(8)</b> over the 45 mm stub — friction fit + foam wrap. Both re-print alone if `De` gets re-tuned <span class="mono">(F2)</span>.</p></div>
+
+  <div class="step"><span class="n">8</span>
+    <svg viewBox="0 0 220 120" aria-hidden="true">
+      <path d="M14 96C40 96 44 40 74 40h30" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M104 28v24l24-4V32z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M128 40h30c22 0 24 30 44 30" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <rect x="176" y="62" width="34" height="34" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <text x="193" y="84" font-size="9" text-anchor="middle" class="mono">SC0075</text>
+    </svg>
+    <p>Hoses <b>(15)</b>: CNC boot → inlet spigot, adapter → SC0075 — short, sloped or vertical <span class="mono">(P12.08)</span>. First run: chips in the drum, near-nothing in the bag. Measure sealed lift + free flow while you're there <span class="mono">(Q-H2)</span>.</p></div>
+</div>
+
+<h2><span class="no">4.</span> Revision — edit as the design evolves</h2>
+<table>
+  <thead><tr><th class="center">Rev</th><th>Date</th><th>Change</th><th>Basis</th></tr></thead>
+  <tbody>
+    <tr><td class="center">A</td><td class="mono">2026-08-04</td><td>Initial issue: sc0075 preset, D 325 / 350 CFM adopted (Q-H1 closed), 17 shell prints in 6 courses, bolt-on inlet duct, outlet adapter added.</td><td class="mono">P12.04–P12.07</td></tr>
+    <!-- Add revision rows above this line -->
+  </tbody>
+</table>
+<div class="revnote">
+  <b>How to edit this document:</b> parts are <span class="mono">&lt;g id="p-…"&gt;</span> groups in the exploded SVG — geometry lives there, part identity lives once in the Komponenter table, and every change gets a Rev row. Colors only via the tokens at the top so both themes stay correct. Design authority is <span class="mono">docs/research/phase-12-hvlp-source.md</span> and the generator — this sheet is their picture. Regenerate parts with <span class="mono">uv run python cyclone.py --preset sc0075</span>; if a dimension here disagrees with <span class="mono">out/sc0075/report.md</span>, the report wins.
+</div>
+
+</div>

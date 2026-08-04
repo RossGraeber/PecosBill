@@ -123,7 +123,7 @@ def test_courses_reassemble():
 def test_arc_split():
     """sc0075 (P12.06): oversize courses come back as printable arc segments,
     plus the bolt-on inlet duct. Every part valid, single solid, on the bed."""
-    from cyclone import PRESETS, arc_plan, body_courses, inlet_duct
+    from cyclone import PRESETS, arc_plan, body_courses, inlet_duct, outlet_adapter
 
     s = PRESETS["sc0075"]
     plan = arc_plan(s)
@@ -132,6 +132,7 @@ def test_arc_split():
     parts = dict(body_courses(s))
     assert len(parts) == sum(plan), (len(parts), plan)
     parts["inlet_duct"] = inlet_duct(s)
+    parts["outlet_adapter"] = outlet_adapter(s)
     for name, p in parts.items():
         assert p.is_valid, f"{name}: invalid solid"
         assert len(p.solids()) == 1, f"{name}: {len(p.solids())} disconnected solids"

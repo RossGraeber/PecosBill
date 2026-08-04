@@ -266,7 +266,7 @@ def check(s: Spec) -> list[tuple[str, bool, str]]:
 
 def _mass_g(s: Spec, density: float = 1.27) -> float:
     """Rough print mass: wall volume of every part, at 100% shell density."""
-    parts = list(body_courses(s).values()) + [vortex_finder(s), lid_socket(s)]
+    parts = list(body_courses(s).values()) + [vortex_finder(s), lid_socket(s), outlet_adapter(s)]
     if s.needs_arc_split:
         parts.append(inlet_duct(s))
     return sum(p.volume for p in parts) / 1000 * density
@@ -772,6 +772,31 @@ def vortex_finder(s: Spec):
     return t
 
 
+def outlet_adapter(s: Spec):
+    """Cyclone outlet -> hose: slip sleeve over the vortex finder's 45 mm stub,
+    lofted contraction down to the hose bore, then a cuff spigot. z=0 = sleeve mouth."""
+    up = (Align.CENTER, Align.CENTER, Align.MIN)
+    r_bore = s.De / 2 + s.wall + s.fit  # slips over the finder stub
+    sleeve_h, h_loft, spigot = 47.0, 80.0, 25.0
+    part = Cylinder(r_bore + s.wall, sleeve_h, align=up)
+    part += loft(
+        [Plane.XY.offset(sleeve_h) * Circle(r_bore + s.wall),
+         Plane.XY.offset(sleeve_h + h_loft) * Circle(s.hose_id / 2 + s.wall)]
+    )
+    part += Pos(0, 0, sleeve_h + h_loft) * Cylinder(
+        s.hose_id / 2 + s.wall, spigot, align=up
+    )
+    part -= Cylinder(r_bore, sleeve_h, align=up)
+    part -= loft(
+        [Plane.XY.offset(sleeve_h - 1) * Circle(s.De / 2),
+         Plane.XY.offset(sleeve_h + h_loft) * Circle(s.hose_id / 2)]
+    )
+    part -= Pos(0, 0, sleeve_h + h_loft - 1) * Cylinder(
+        s.hose_id / 2, spigot + 2, align=up
+    )
+    return part
+
+
 def lid_socket(s: Spec):
     """Bolts through the drum lid; receives the cone tip and reinforces the hole.
 
@@ -843,6 +868,7 @@ def build(s: Spec, outdir: Path, step: bool = True) -> list[Path]:
     parts = body_courses(s)
     parts["vortex_finder"] = vortex_finder(s)
     parts["lid_socket"] = lid_socket(s)
+    parts["outlet_adapter"] = outlet_adapter(s)
     if s.needs_arc_split:
         parts["inlet_duct"] = inlet_duct(s)
     for name, shape in parts.items():
