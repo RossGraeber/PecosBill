@@ -267,6 +267,8 @@ def check(s: Spec) -> list[tuple[str, bool, str]]:
 def _mass_g(s: Spec, density: float = 1.27) -> float:
     """Rough print mass: wall volume of every part, at 100% shell density."""
     parts = list(body_courses(s).values()) + [vortex_finder(s), lid_socket(s)]
+    if s.needs_arc_split:
+        parts.append(inlet_duct(s))
     return sum(p.volume for p in parts) / 1000 * density
 
 
@@ -304,9 +306,14 @@ def report(s: Spec) -> str:
         "## Manufacture",
         "",
         f"- Wall {s.wall:.1f} mm, courses **{s.n_courses}**, "
-        f"arc split {'REQUIRED' if s.needs_arc_split else 'not needed'}",
+        + (
+            f"arc split: segments per course {'+'.join(str(n) for n in arc_plan(s))} "
+            f"= **{sum(arc_plan(s))} shell prints** (S8/P8.103)"
+            if s.needs_arc_split
+            else "arc split not needed"
+        ),
         f"- Course splits at z = {', '.join(f'{z:.0f}' for z in s.split_z) or 'n/a'} mm above cone tip",
-        f"- Flange OD {s.D+2*s.wall+2*s.flange_w:.0f} mm, {s.n_bolts} x M4",
+        f"- Barrel flange OD {2*_course_R(s, s.H):.0f} mm; cone-joint flanges sized to the joint",
         f"- Filament (solid perimeters, PETG @ 1.27 g/cm3): **~{_mass_g(s):.0f} g**",
         "",
         "### Slicer settings",
@@ -326,13 +333,25 @@ def report(s: Spec) -> str:
         "",
         "| Part | On the bed | Note |",
         "|---|---|---|",
-        "| `body_course_01` | wide end down | cone narrows upward at "
+        "| cone courses / arcs | wide end down | cone narrows upward at "
         f"{s.cone_semi_angle:.1f} deg - self-supporting |",
-        "| `body_course_02` | **roof down** | flat face, best adhesion; the inlet duct "
-        f"bridges {s.b:.0f} mm |",
+        "| top course / arcs | **roof down** | flat face, best adhesion"
+        + ("" if s.needs_arc_split else f"; the inlet duct bridges {s.b:.0f} mm")
+        + " |",
         "| `vortex_finder` | collar down | |",
         "| `lid_socket` | plate down | |",
-        "",
+    ] + (
+        [
+            "| `inlet_duct` | flange plate down | rect->round morph rises near-vertical |",
+            "",
+            "Axial seams (arc segments): M4 through the seam webs, foam tape or a thin "
+            "silicone bead on the web faces. Seams are in compression under vacuum "
+            "(P8.100) - they need sealing and roundness, not strength.",
+            "",
+        ]
+        if s.needs_arc_split
+        else [""]
+    ) + [
         "### Drum lid",
         "",
         drill_pattern(s),
@@ -373,8 +392,33 @@ def report(s: Spec) -> str:
 #   z = H + wall     roof top
 
 
-def _shell(s: Spec):
-    """Solid body: cone + barrel + roof + tangential inlet, bored out."""
+DUCT_STUB = 20.0  # rect stub beyond the barrel OD to the bolt-on duct frame (arc mode)
+
+
+def _duct_frame(s: Spec) -> dict:
+    """Shared geometry of the bolt-on inlet joint (arc-split builds, P12.06/D8)."""
+    ri_body = s.D / 2
+    y_c = ri_body - s.b / 2
+    z_c = s.H - s.a / 2
+    fw = s.flange_w
+    x_f = -(ri_body + s.wall + DUCT_STUB)  # frame face plane
+    z_lo = z_c - s.a / 2 - s.wall - fw
+    z_hi = min(z_c + s.a / 2 + s.wall + fw, s.H + s.wall)  # capped at roof top
+    holes = []  # (y, z) — U pattern: 4 side, 2 bottom; roof caps the top edge
+    y_side = s.b / 2 + s.wall + fw / 2
+    for sy in (-1, 1):
+        for dz in (-s.a / 4, s.a / 4):
+            holes.append((y_c + sy * y_side, z_c + dz))
+    z_bot = z_c - (s.a / 2 + s.wall + fw / 2)
+    for dy in (-s.b / 4, s.b / 4):
+        holes.append((y_c + dy, z_bot))
+    return dict(y_c=y_c, z_c=z_c, x_f=x_f, z_lo=z_lo, z_hi=z_hi,
+                frame_w=s.b + 2 * s.wall + 2 * fw, holes=holes)
+
+
+def _solids(s: Spec):
+    """(outer, void). void = every air-side volume: flow cavity, duct bore, finder
+    clearance. Kept separate so arc-seam webs can be carved to never enter the flow."""
     ri_tip, ri_body = s.B / 2, s.D / 2
     z_j, z_top = s.cone_h, s.H  # junction, roof underside
 
@@ -385,60 +429,91 @@ def _shell(s: Spec):
     # tangential inlet: outer wall of the duct is tangent to the barrel bore.
     y_c = ri_body - s.b / 2
     z_c = z_top - s.a / 2
-    # Area-matched rect->round morph, not a diffuser: 29.5x59 = 1740 mm2 vs
-    # a 47.6 dia round = 1780 mm2. Kept short so the course fits the bed in X.
-    duct_len = s.a
-    spigot = 25.0
     # The rect section must sit INSIDE the barrel wall: a union across exactly
     # coincident faces leaves two disconnected solids (OCCT), so overlap by 2*wall.
     x_rect = -(ri_body + s.wall) + 2 * s.wall
-    x_round = x_rect - duct_len
-    x_end = x_round - spigot
 
-    # outer duct
-    pl_r_o = Plane(origin=(x_rect, y_c, z_c), z_dir=(1, 0, 0))
-    pl_c_o = Plane(origin=(x_round, y_c, z_c), z_dir=(1, 0, 0))
-    outer += loft(
-        [pl_r_o * Rectangle(s.b + 2 * s.wall, s.a + 2 * s.wall),
-         pl_c_o * Circle(s.hose_id / 2 + s.wall)]
-    )
-    outer += Pos(x_end, y_c, z_c) * Rot(0, 90, 0) * Cylinder(
-        s.hose_id / 2 + s.wall, spigot, align=(Align.CENTER, Align.CENTER, Align.MIN)
-    )
-
-    # ---- bores ----
     inner = Cone(ri_tip, ri_body, z_j, align=up)
     inner += Pos(0, 0, z_j) * Cylinder(ri_body, s.h, align=up)
 
-    pl_r_i = Plane(origin=(x_rect + 0.01, y_c, z_c), z_dir=(1, 0, 0))
-    pl_c_i = Plane(origin=(x_round, y_c, z_c), z_dir=(1, 0, 0))
-    duct_bore = loft([pl_r_i * Rectangle(s.b, s.a), pl_c_i * Circle(s.hose_id / 2)])
-    duct_bore += Pos(x_end - 1, y_c, z_c) * Rot(0, 90, 0) * Cylinder(
-        s.hose_id / 2, spigot + 1, align=(Align.CENTER, Align.CENTER, Align.MIN)
-    )
+    if s.needs_arc_split:
+        # Integral duct would overflow the bed (P12.06): keep only a rect stub and a
+        # bolt frame; the morph+spigot become the separate `inlet_duct` part (D8).
+        f = _duct_frame(s)
+        x_f = f["x_f"]
+        outer += Pos((x_rect + x_f) / 2, y_c, z_c) * Box(
+            x_rect - x_f, s.b + 2 * s.wall, s.a + 2 * s.wall
+        )
+        outer += Pos(x_f + s.flange_t / 2, y_c, (f["z_lo"] + f["z_hi"]) / 2) * Box(
+            s.flange_t, f["frame_w"], f["z_hi"] - f["z_lo"]
+        )
+        for yy, zz in f["holes"]:
+            outer -= Pos(x_f + s.flange_t / 2, yy, zz) * Rot(0, 90, 0) * Cylinder(
+                s.bolt_dia / 2, 2 * s.flange_t + 6, align=(Align.CENTER, Align.CENTER, Align.CENTER)
+            )
+        duct_bore = Pos((x_rect + x_f - 2) / 2, y_c, z_c) * Box(
+            x_rect - x_f + 2, s.b, s.a
+        )
+    else:
+        # Area-matched rect->round morph printed integral with the top course.
+        duct_len = s.a
+        spigot = 25.0
+        x_round = x_rect - duct_len
+        x_end = x_round - spigot
+        pl_r_o = Plane(origin=(x_rect, y_c, z_c), z_dir=(1, 0, 0))
+        pl_c_o = Plane(origin=(x_round, y_c, z_c), z_dir=(1, 0, 0))
+        outer += loft(
+            [pl_r_o * Rectangle(s.b + 2 * s.wall, s.a + 2 * s.wall),
+             pl_c_o * Circle(s.hose_id / 2 + s.wall)]
+        )
+        outer += Pos(x_end, y_c, z_c) * Rot(0, 90, 0) * Cylinder(
+            s.hose_id / 2 + s.wall, spigot, align=(Align.CENTER, Align.CENTER, Align.MIN)
+        )
+        pl_r_i = Plane(origin=(x_rect + 0.01, y_c, z_c), z_dir=(1, 0, 0))
+        pl_c_i = Plane(origin=(x_round, y_c, z_c), z_dir=(1, 0, 0))
+        duct_bore = loft([pl_r_i * Rectangle(s.b, s.a), pl_c_i * Circle(s.hose_id / 2)])
+        duct_bore += Pos(x_end - 1, y_c, z_c) * Rot(0, 90, 0) * Cylinder(
+            s.hose_id / 2, spigot + 1, align=(Align.CENTER, Align.CENTER, Align.MIN)
+        )
+
     # extend the rectangular mouth inward so it fully opens into the barrel
     duct_bore += Pos(x_rect + ri_body / 2, y_c, z_c) * Box(
         ri_body + 2 * s.wall, s.b, s.a
     )
     inner += duct_bore
 
-    body = outer - inner
     # vortex finder bore through the roof, with print clearance for a separate tube
-    body -= Pos(0, 0, s.H - s.S) * Cylinder(
+    void = inner + Pos(0, 0, s.H - s.S) * Cylinder(
         s.De / 2 + s.wall + s.fit, s.S + s.wall + 1, align=up
     )
-    return body
+    return outer, void
 
 
-def _flange(s: Spec, z_lo: float, r_inner: float):
-    """Annular flange occupying z_lo .. z_lo+flange_t, bored to r_inner, with bolt holes."""
+def _shell(s: Spec):
+    """Solid body: cone + barrel + roof + tangential inlet, bored out."""
+    outer, void = _solids(s)
+    return outer - void
+
+
+def _joint_bolts(s: Spec, pcd: float) -> int:
+    """Bolt count so spacing stays <= ~90 mm on big joints (P7.14 - joints leak first)."""
+    return max(s.n_bolts, math.ceil(2 * math.pi * pcd / 90.0))
+
+
+def _flange(s: Spec, z_lo: float, r_inner: float, r_joint: float):
+    """Annular flange occupying z_lo .. z_lo+flange_t, bored to r_inner, with bolt holes.
+
+    Sized to the JOINT radius, not D: cone-joint flanges stay local, so lower cone
+    courses can print whole even when the barrel needs arc splitting (P12.06).
+    """
     up = (Align.CENTER, Align.CENTER, Align.MIN)
-    r_o = s.D / 2 + s.wall + s.flange_w
+    r_o = r_joint + s.wall + s.flange_w
     fl = Pos(0, 0, z_lo) * Cylinder(r_o, s.flange_t, align=up)
     fl -= Pos(0, 0, z_lo - 1) * Cylinder(r_inner, s.flange_t + 2, align=up)
-    pcd = s.D / 2 + s.wall + s.flange_w / 2
-    for i in range(s.n_bolts):
-        ang = 2 * math.pi * i / s.n_bolts
+    pcd = r_joint + s.wall + s.flange_w / 2
+    n = _joint_bolts(s, pcd)
+    for i in range(n):
+        ang = 2 * math.pi * i / n
         fl -= Pos(pcd * math.cos(ang), pcd * math.sin(ang), z_lo - 1) * Cylinder(
             s.bolt_dia / 2, s.flange_t + 2, align=up
         )
@@ -463,21 +538,149 @@ def _largest(shape):
     return shape
 
 
+# ------------------------------------------------------------------ arc split (S8/P8.103)
+#
+# A course whose flange OD exceeds the bed splits into n arc segments about Z.
+# Axial seams are in COMPRESSION under vacuum (P8.100): the webs + bolts provide
+# alignment and sealing clamp, not strength. Min-bbox rule: an arc of outer radius
+# R and angle 2pi/n, axis-aligned, boxes to R*(1-cos(2pi/n)) x R.
+
+
+def _n_arcs(s: Spec, R: float) -> int:
+    """Fewest segments so one segment of outer radius R fits the bed."""
+    if 2 * R <= s.bed_xy:
+        return 1
+    for n in range(3, 13):  # n=2 boxes to 2R x R, never fits once 2R > bed
+        if R <= s.bed_xy and R * (1 - math.cos(2 * math.pi / n)) <= s.bed_xy:
+            return n
+    raise ValueError(f"segment radius {R:.0f} mm cannot fit a {s.bed_xy:.0f} mm bed")
+
+
+def _course_bounds(s: Spec) -> list[tuple[float, float]]:
+    total = s.H + s.wall
+    bounds = [0.0] + list(s.split_z) + [total]
+    return list(zip(bounds, bounds[1:]))
+
+
+def _course_R(s: Spec, hi: float) -> float:
+    """Governing outer radius of a course = its widest flange + the register lip."""
+    return _radius_at(s, min(hi, s.H)) + s.wall + s.flange_w + s.fit + s.wall
+
+
+def arc_plan(s: Spec) -> list[int]:
+    """Segments per course, bottom to top."""
+    return [_n_arcs(s, _course_R(s, hi)) for _, hi in _course_bounds(s)]
+
+
+def _duct_window(s: Spec) -> tuple[float, float]:
+    """Angular span (rad) the inlet stub occupies on the barrel wall."""
+    ri_body = s.D / 2
+    y_c = ri_body - s.b / 2
+    theta_c = math.atan2(y_c, -(ri_body + s.wall))
+    half = math.atan((s.b / 2 + s.wall + s.flange_w + 8) / ri_body)
+    return theta_c - half, theta_c + half
+
+
+def _ang_dist(a: float, b: float) -> float:
+    d = abs(a - b) % (2 * math.pi)
+    return min(d, 2 * math.pi - d)
+
+
+def _seam_offset(s: Spec, n: int, lo: float, hi: float, has_duct: bool) -> float:
+    """Rotate the seam pattern so no seam crosses the inlet stub or lands on a
+    horizontal-flange bolt hole. Deterministic search; falls back to best-effort."""
+    phi = 2 * math.pi / n
+    total = s.H + s.wall
+    bolt_angles = []
+    clearance = 0.05  # rad floor
+    for z_joint in ([lo] if lo > 0 else []) + ([hi] if hi < total else []):
+        pcd = _radius_at(s, min(z_joint, s.H)) + s.wall + s.flange_w / 2
+        nb = _joint_bolts(s, pcd)
+        bolt_angles += [(2 * math.pi * i / nb, pcd) for i in range(nb)]
+        clearance = max(clearance, ((s.bolt_dia + s.flange_t) / 2 + 2) / pcd)
+    win = _duct_window(s) if has_duct else None
+
+    best, best_score = 0.0, -1.0
+    for step in range(180):
+        off = phi * step / 180
+        seams = [off + k * phi for k in range(n)]
+        if win and any(win[0] - 0.1 < th % (2 * math.pi) < win[1] + 0.1 for th in seams):
+            continue
+        score = min(
+            (_ang_dist(th, ba) for th in seams for ba, _ in bolt_angles),
+            default=math.pi,
+        )
+        if score > best_score:
+            best, best_score = off, score
+        if score >= clearance:
+            return off
+    if best_score < 0:
+        raise ValueError(f"no seam offset clears the inlet stub with n={n}")
+    return best  # bolt clash unavoidable; closest approach still best_score rad
+
+
+def _course_arcs(s: Spec, seg, lo: float, hi: float, n: int, void, has_duct: bool) -> dict:
+    """Cut one course into n sectors, each with seam webs + bolt holes."""
+    up = (Align.CENTER, Align.CENTER, Align.MIN)
+    lo3 = (Align.MIN, Align.MIN, Align.MIN)
+    R = _course_R(s, hi)
+    phi = 2 * math.pi / n
+    off = _seam_offset(s, n, lo, hi, has_duct)
+    hz = hi - lo
+    r_b = R - s.flange_w / 2
+    zs_bolt = [lo + 18, hi - 18] + ([lo + hz / 2] if hz > 150 else [])
+    parts = {}
+    big = 4 * R
+    ctr = (Align.CENTER, Align.CENTER, Align.CENTER)
+    z_mid = lo - 1 + (hz + 14) / 2
+    for k in range(n):
+        t1 = off + k * phi
+        # sector = seg cut by two half-spaces (valid for phi <= 180 deg); Cylinder's
+        # arc_size can't be used - align centres the pie's bbox, moving the apex off axis
+        hs1 = Rot(0, 0, math.degrees(t1)) * Pos(0, big / 2, z_mid) * Box(
+            2 * big, big, hz + 14, align=ctr
+        )
+        hs2 = Rot(0, 0, math.degrees(t1 + phi)) * Pos(0, -big / 2, z_mid) * Box(
+            2 * big, big, hz + 14, align=ctr
+        )
+        sector = seg & hs1 & hs2
+        w1 = Rot(0, 0, math.degrees(t1)) * Pos(0, 0, lo) * Box(
+            R, s.flange_t, hz, align=lo3
+        )
+        w2 = Rot(0, 0, math.degrees(t1 + phi)) * Pos(0, 0, lo) * Box(
+            R, s.flange_t, hz, align=(Align.MIN, Align.MAX, Align.MIN)
+        )
+        webs = (w1 + w2) - void
+        for th in (t1, t1 + phi):
+            for zb in zs_bolt:
+                hole = Rot(0, 0, math.degrees(th)) * Pos(r_b, 0, zb) * Rot(90, 0, 0) * Cylinder(
+                    s.bolt_dia / 2, 2 * s.flange_t + 6,
+                    align=(Align.CENTER, Align.CENTER, Align.CENTER),
+                )
+                webs -= hole
+                sector -= hole
+        # rotate the seam onto +X: bbox becomes R*(1-cos(phi)) x R, provably on-bed
+        parts[f"arc{k+1}"] = Rot(0, 0, -math.degrees(t1)) * (sector + webs)
+    return parts
+
+
 def body_courses(s: Spec) -> dict:
-    """Split the shell into printable courses joined by butt flanges + a register boss."""
-    shell = _shell(s)
+    """Split the shell into printable courses joined by butt flanges + a register boss.
+    Courses whose flanges overflow the bed split further into arc segments (S8/P8.103)."""
+    outer, void = _solids(s)
+    shell = outer - void
     zs = s.split_z
-    if not zs:
+    if not zs and not s.needs_arc_split:
         return {"body": shell}
 
     up = (Align.CENTER, Align.CENTER, Align.MIN)
     reg_h = 8.0
     total = s.H + s.wall
-    bounds = [0.0] + list(zs) + [total]
+    plan = arc_plan(s)
+    z_duct_lo = s.H - s.a  # inlet stub z-window (arc mode)
     parts: dict = {}
 
-    for i in range(len(bounds) - 1):
-        lo, hi = bounds[i], bounds[i + 1]
+    for i, (lo, hi) in enumerate(_course_bounds(s)):
         seg = shell
         if lo > 0:
             seg = _largest(seg.split(Plane.XY.offset(lo), keep=Keep.TOP))
@@ -485,16 +688,76 @@ def body_courses(s: Spec) -> dict:
             seg = _largest(seg.split(Plane.XY.offset(hi), keep=Keep.BOTTOM))
 
         if lo > 0:  # bottom flange of this course
-            seg += _flange(s, lo, _radius_at(s, lo))
-        if hi < total:  # top flange + register boss that plugs into the next course
-            seg += _flange(s, hi - s.flange_t, _radius_at(s, hi - s.flange_t))
-            r_i = _radius_at(s, hi)
-            boss = Pos(0, 0, hi) * Cylinder(r_i - s.fit, reg_h, align=up)
-            boss -= Pos(0, 0, hi - 1) * Cylinder(r_i - s.fit - s.wall, reg_h + 2, align=up)
-            seg += boss
+            seg += _flange(s, lo, _radius_at(s, lo), _radius_at(s, lo))
+        if hi < total:
+            # top flange + register lip that wraps the NEXT course's flange OD.
+            # External (an internal bore boss disconnects at barrel joints - the fit
+            # gap has no cone slope to bridge - and would ledge into the flow).
+            seg += _flange(s, hi - s.flange_t, _radius_at(s, hi - s.flange_t), _radius_at(s, hi))
+            r_o = _radius_at(s, hi) + s.wall + s.flange_w  # joint flange OD, both sides
+            foot = Pos(0, 0, hi - s.flange_t) * Cylinder(
+                r_o + s.fit + s.wall, s.flange_t, align=up
+            )
+            foot -= Pos(0, 0, hi - s.flange_t - 1) * Cylinder(r_o - 2, s.flange_t + 2, align=up)
+            neck = Pos(0, 0, hi - 1) * Cylinder(r_o + s.fit + s.wall, reg_h + 1, align=up)
+            neck -= Pos(0, 0, hi - 2) * Cylinder(r_o + s.fit, reg_h + 3, align=up)
+            seg += foot + neck
 
-        parts[f"body_course_{i+1:02d}"] = seg
+        name = f"body_course_{i+1:02d}"
+        if plan[i] == 1:
+            parts[name] = seg
+        else:
+            has_duct = s.needs_arc_split and hi > z_duct_lo
+            for suffix, arc in _course_arcs(s, seg, lo, hi, plan[i], void, has_duct).items():
+                parts[f"{name}_{suffix}"] = arc
     return parts
+
+
+def inlet_duct(s: Spec):
+    """Bolt-on inlet for arc-split builds: frame + rect->round morph + hose spigot.
+
+    The integral duct overflows the bed once D is barrel-course size (P12.06), and a
+    separate inlet is independently re-printable anyway (D8). Diffuser or contraction
+    falls out of the areas — no separate decision (O3, P12.07). Print flange-down.
+    """
+    f = _duct_frame(s)
+    y_c, z_c, x_f = f["y_c"], f["z_c"], f["x_f"]
+    morph, spigot, lead = 120.0, 25.0, 10.0
+    x_plate = x_f - s.flange_t  # plate occupies x_f-flange_t .. x_f (mates the frame face)
+    x_round = x_plate - lead - morph
+    x_end = x_round - spigot
+
+    part = Pos(x_f - s.flange_t / 2, y_c, (f["z_lo"] + f["z_hi"]) / 2) * Box(
+        s.flange_t, f["frame_w"], f["z_hi"] - f["z_lo"]
+    )
+    # rect lead-out, overlapping the plate so the union is robust
+    part += Pos((x_f + x_plate - lead) / 2, y_c, z_c) * Box(
+        x_f - x_plate + lead, s.b + 2 * s.wall, s.a + 2 * s.wall
+    )
+    pl_r_o = Plane(origin=(x_plate - lead, y_c, z_c), z_dir=(1, 0, 0))
+    pl_c_o = Plane(origin=(x_round, y_c, z_c), z_dir=(1, 0, 0))
+    part += loft(
+        [pl_r_o * Rectangle(s.b + 2 * s.wall, s.a + 2 * s.wall),
+         pl_c_o * Circle(s.hose_id / 2 + s.wall)]
+    )
+    part += Pos(x_end, y_c, z_c) * Rot(0, 90, 0) * Cylinder(
+        s.hose_id / 2 + s.wall, spigot, align=(Align.CENTER, Align.CENTER, Align.MIN)
+    )
+
+    bore = Pos((x_f + 2 + x_plate - lead) / 2, y_c, z_c) * Box(
+        x_f + 2 - (x_plate - lead), s.b, s.a
+    )
+    pl_r_i = Plane(origin=(x_plate - lead + 0.01, y_c, z_c), z_dir=(1, 0, 0))
+    bore += loft([pl_r_i * Rectangle(s.b, s.a), pl_c_o * Circle(s.hose_id / 2)])
+    bore += Pos(x_end - 1, y_c, z_c) * Rot(0, 90, 0) * Cylinder(
+        s.hose_id / 2, spigot + 2, align=(Align.CENTER, Align.CENTER, Align.MIN)
+    )
+    part -= bore
+    for yy, zz in f["holes"]:
+        part -= Pos(x_f - s.flange_t / 2, yy, zz) * Rot(0, 90, 0) * Cylinder(
+            s.bolt_dia / 2, 2 * s.flange_t + 6, align=(Align.CENTER, Align.CENTER, Align.CENTER)
+        )
+    return part
 
 
 def vortex_finder(s: Spec):
@@ -553,7 +816,6 @@ PRESETS = {
     "build1": Spec(name="build1"),
     # Build-2 target (P8.91, D1). Deferred until the LVHP system exists (D9).
     # O1: vin 17.4 m/s, 7% over 1D3D design velocity - judged acceptable (D2).
-    # S8: needs arc splitting, which is specified (P8.103) but NOT YET IMPLEMENTED.
     "build2": Spec(
         name="build2",
         D=240.0,
@@ -561,21 +823,28 @@ PRESETS = {
         hose_id=88.9,
         accepted=frozenset({"O1", "S8"}),
     ),
+    # SC0075 HVLP duty (phase-12). Pressure is the scarce axis (P12.01): vin sits
+    # at the LOW end of O1 so cyclone dp stays ~3" H2O (P12.04). Q=350 CFM is
+    # provisional pending measured flow (P12.02, Q-H1). De/D=0.50 is the dp-relief
+    # ceiling under G4. Barrel courses exceed the bed -> arc split (P12.06).
+    "sc0075": Spec(
+        name="sc0075",
+        D=325.0,
+        Q_cfm=350.0,
+        hose_id=100.0,
+        accepted=frozenset({"S8"}),
+    ),
 }
 
 
 def build(s: Spec, outdir: Path, step: bool = True) -> list[Path]:
-    if s.needs_arc_split:
-        raise NotImplementedError(
-            f"{s.name}: flange OD {s.D+2*s.wall+2*s.flange_w:.0f} mm exceeds the "
-            f"{s.bed_xy:.0f} mm bed. Arc splitting is specified (P8.103) but not yet "
-            "implemented - refusing to emit parts that will not print."
-        )
     outdir.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
     parts = body_courses(s)
     parts["vortex_finder"] = vortex_finder(s)
     parts["lid_socket"] = lid_socket(s)
+    if s.needs_arc_split:
+        parts["inlet_duct"] = inlet_duct(s)
     for name, shape in parts.items():
         p = outdir / f"{name}.stl"
         export_stl(shape, str(p))

@@ -78,16 +78,15 @@ def test_parts_printable():
 
 
 def test_joint_fits():
-    """Register boss on course N must slide into the bore of course N+1."""
+    """Register lip on course N must wrap the flange OD of course N+1."""
     s = PRESETS["build1"]
     for z in s.split_z:
-        r_i = _radius_at(s, z)
-        boss_od = 2 * (r_i - s.fit)
-        bore_id = 2 * r_i
-        assert boss_od < bore_id, "boss does not fit"
-        gap = (bore_id - boss_od) / 2
+        fl_od = 2 * (_radius_at(s, z) + s.wall + s.flange_w)
+        lip_id = fl_od + 2 * s.fit
+        assert fl_od < lip_id, "flange does not enter the lip"
+        gap = (lip_id - fl_od) / 2
         assert 0.15 <= gap <= 0.6, f"joint clearance {gap:.2f} mm out of range"
-        print(f"  joint at z={z:.0f}: boss {boss_od:.1f} into bore {bore_id:.1f}, {gap:.2f} mm/side")
+        print(f"  joint at z={z:.0f}: flange {fl_od:.1f} into lip {lip_id:.1f}, {gap:.2f} mm/side")
 
 
 def test_interfaces_fit():
@@ -121,6 +120,29 @@ def test_courses_reassemble():
     print(f"  reassembly: {len(parts)} courses, {total/shell.volume:.2f}x shell volume (flanges+bosses)")
 
 
+def test_arc_split():
+    """sc0075 (P12.06): oversize courses come back as printable arc segments,
+    plus the bolt-on inlet duct. Every part valid, single solid, on the bed."""
+    from cyclone import PRESETS, arc_plan, body_courses, inlet_duct
+
+    s = PRESETS["sc0075"]
+    plan = arc_plan(s)
+    assert plan[0] == 1, "bottom cone course should print whole (localised flanges)"
+    assert plan[-1] > 1, "barrel course must split"
+    parts = dict(body_courses(s))
+    assert len(parts) == sum(plan), (len(parts), plan)
+    parts["inlet_duct"] = inlet_duct(s)
+    for name, p in parts.items():
+        assert p.is_valid, f"{name}: invalid solid"
+        assert len(p.solids()) == 1, f"{name}: {len(p.solids())} disconnected solids"
+        x, y, z = _bbox(p)
+        assert z <= s.bed_z + 0.5, f"{name}: {z:.0f} mm tall > bed_z"
+        assert x <= s.bed_xy + 0.5, f"{name}: {x:.0f} mm in X > bed_xy"
+        assert y <= s.bed_xy + 0.5, f"{name}: {y:.0f} mm in Y > bed_xy"
+        print(f"  {name:24s} {x:6.1f} x {y:6.1f} x {z:6.1f} mm   {p.volume/1000:7.1f} cm3")
+    print(f"  arc plan {plan} = {sum(plan)} shell prints + inlet_duct")
+
+
 if __name__ == "__main__":
     for fn in (
         test_maths,
@@ -130,6 +152,7 @@ if __name__ == "__main__":
         test_interfaces_fit,
         test_courses_reassemble,
         test_parts_printable,
+        test_arc_split,
     ):
         print(f"{fn.__name__}:")
         fn()
