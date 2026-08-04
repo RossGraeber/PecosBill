@@ -62,5 +62,5 @@ end of the `O1` band**, not at the 1D3D family velocity.
 
 | ID | Question | Blocks |
 |---|---|---|
-| `Q-H1` | **Measured delivered flow** at the hose end, unit assembled, bag on (`V9.17` rig). Decides final `D`. | cutting geometry |
+| ~~`Q-H1`~~ | **CLOSED 2026-08-03 (user decision, `D4` pattern): no pre-build measurement; 350 CFM is adopted as the design flow.** `D` = 325 mm stands. Residual risk is `P12.05`'s, stated there: the geometry degrades gracefully across 300–400 CFM, and the first print's job is to tell us which end we are on (`D7` discipline). | — |
 | `Q-H2` | SC0075 static curve — even two points (sealed lift, free flow) bounds the Δp trade far better than the nameplate. | `P12.05` refinement |
