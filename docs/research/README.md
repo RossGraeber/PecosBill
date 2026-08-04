@@ -41,6 +41,7 @@ substrate for Stage 2.
 | 8 | [phase-08-system-integration.md](phase-08-system-integration.md) | CNC-router duty: PSD, flow, transport velocity, fan matching | P1.31, P1.33, P3.25 |
 | 9 | [phase-09-validation.md](phase-09-validation.md) | Measurement method, contradiction log, what the evidence does *not* support | all |
 | 10 | [phase-10-design-space.md](phase-10-design-space.md) | Constraint synthesis + open decisions handed to Stage 2 | all |
+| 11 | [phase-11-vacuum-source.md](phase-11-vacuum-source.md) | LVHP vacuum source: motor class, parallel topology, 120 V circuit allocation | P8.79–P8.97, P8.67 |
 
 ## Reading order for an agent
 
@@ -68,3 +69,9 @@ generator plus one fixed printed geometry. `Q6` = **hobbyist on a commercial mac
 Build 2 (`D`=240 mm @ 265 CFM) is deferred until the LVHP system is designed — the generator must still carry it (`D9`).
 
 **Stage 1 is closed.** Next deliverable is the parametric generator, not geometry (§10.6).
+
+**LVHP vacuum source (2026-08-01):** phase 11 opened for the CamVac-class drum extractor that
+unblocks build 2. `C-V1` = **single plug, single circuit** (user). Final configuration:
+**2 × 900 W 116392-class tangential bypass motors, parallel, one cord, NEMA 5-20P on the 20 A
+circuit** (`P11.25`). ~160 CFM at duty; cyclone regen target `D` ≈ 200 mm (`P11.28`).
+Open: `Q-V2`, `Q-V4`, `Q-V5`.
